@@ -1,7 +1,5 @@
 .vscode
-blog/static
-mirovarga.com
-mirovarga.github.com
+static
 dist-newstyle
 cabal.project.local
 ROADMAP.md

@@ -5,9 +5,11 @@ module App.Html.Mustache
   ( IndexPage (IndexPage),
     PostPage (PostPage),
     TagPage (TagPage),
+    prepareDirs,
     indexToFile,
     postToFile,
     tagToFile,
+    copyAssets,
   )
 where
 
@@ -20,6 +22,7 @@ import qualified Data.Text.Lazy.IO as TLIO
 import Data.Time
 import GHC.Generics
 import Lucid
+import System.Directory
 import System.FilePath
 import qualified Text.MMark as MD
 import Text.Mustache
@@ -29,6 +32,12 @@ newtype IndexPage = IndexPage [Post]
 newtype PostPage = PostPage Post
 
 data TagPage = TagPage T.Text [Post]
+
+prepareDirs :: FilePath -> IO ()
+prepareDirs dir = do
+  let staticDir = joinPath [dir, "static"]
+  removePathForcibly staticDir
+  createDirectoryIfMissing True $ joinPath [staticDir, "tags"]
 
 indexToFile :: FilePath -> IndexPage -> IO ()
 indexToFile dir (IndexPage posts) = do
@@ -74,6 +83,14 @@ tagToFile dir (TagPage t posts) = do
         ]
   where
     title' = "Posts tagged with '" <> t <> "'" :: T.Text
+
+copyAssets :: FilePath -> IO ()
+copyAssets dir = do
+  let templatesDir = joinPath [dir, "templates"]
+  files <- listDirectory templatesDir
+  let filesWithDir = map (templatesDir </>) files
+  let assets = filter (not . isExtensionOf ".mustache") filesWithDir
+  mapM_ (\a -> copyFile a $ joinPath [dir, "static", takeFileName a]) assets
 
 instance ToJSON Post where
   toJSON p =

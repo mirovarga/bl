@@ -18,11 +18,15 @@ main = do
   mds <- mdFiles srcDir >>= mapM readFile
   let posts = mdToPost . M.Markdown . pack <$> mds
 
+  prepareDirs srcDir
+
   indexToFile srcDir . IndexPage $ newestFirst posts
   mapM_ (postToFile srcDir . PostPage) posts
   mapM_
     (tagToFile srcDir . (\t -> TagPage t (newestFirst $ withTag t posts)))
     (allTags posts)
+
+  copyAssets srcDir
 
 mdFiles :: FilePath -> IO [FilePath]
 mdFiles dir = do
