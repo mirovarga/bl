@@ -1,12 +1,12 @@
 <h1>{{title}}</h1>
 
-<p>
-  <em>
-    {{created}}
-    {{#tags}}
-    <a href="/tags/{{.}}.html">{{.}}</a>
-    {{/tags}}
-  </em>
-</p>
+<div class="meta">
+  {{created}}
+  <br>
+
+  {{#tags}}
+  <a href="/tags/{{.}}.html">{{.}}</a>
+  {{/tags}}
+</div>
 
 {{{content}}}

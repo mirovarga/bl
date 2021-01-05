@@ -4,12 +4,12 @@
 
 *LitePub, bl, Go, Haskell*
 
-##### The Short Story
+## The Short Story
 
 Starting yesterday, I generate this blog with [bl](https://github.com/mirovarga/bl)
 instead of [LitePub](https://github.com/mirovarga/litepub).
 
-##### The Longer Story
+## The Longer Story
 
 I've been learning, (or trying to learn), Haskell for several years now and
 finally decided to write something real in it. That something is

@@ -11,72 +11,38 @@
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-  <link rel="stylesheet" href="/skeleton.min.css">
-  <style>
-    td,
-    th {
-      border-bottom: none
-    }
-  </style>
+  <link rel="stylesheet" href="/normalize.min.css">
+  <link rel="stylesheet" href="/main.css">
+
+  <link rel="stylesheet" href="/highlight.min.css">
+  <script src="/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad()</script>
 </head>
 
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="twelve columns">
-        <a href="/">
-          <h4 class="u-pull-left">Miro Varga</h4>
-        </a>
-        <a href="/">
-          <h4 class="u-pull-right">Posts</h4>
-        </a>
-      </div>
+  <header>
+    <div class="logo">
+      <a href="/">Miro Varga</a>
     </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="https://www.linkedin.com/in/miro-varga-670002187">LinkedIn</a>
+      <a href="https://github.com/mirovarga">GitHub</a>
+      <a href="https://twitter.com/mirovarga">Twitter</a>
+      <a href="mailto:hello@mirovarga.com">Email</a>
+    </nav>
+  </header>
 
-    <div class="row">
-      <div class="twelve columns">
-        <hr>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="twelve columns">
-        {{{content}}}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="twelve columns">
-        <hr>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="four columns">
-        <small class="u-pull-left">
-          © 2021
-          <a href="/">Miro Varga</a>
-        </small>
-      </div>
-      <div class="four columns">
-        <small>
-          <a href="https://www.linkedin.com/in/miro-varga-670002187">LinkedIn</a>
-          ·
-          <a href="https://github.com/mirovarga">GitHub</a>
-          ·
-          <a href="https://twitter.com/mirovarga">Twitter</a>
-          ·
-          <a href="mailto:hello@mirovarga.com">Email</a>
-        </small>
-      </div>
-      <div class="four columns">
-        <small class="u-pull-right">
-          Built with
-          <a href="https://github.com/mirovarga/bl"><strong>bl</strong></a>
-        </small>
-      </div>
-    </div>
+  <div class="content">
+    {{{content}}}
   </div>
+
+  <footer>
+    © 2021 Miro Varga
+    <div class="promo">
+      Built with <a href="https://github.com/mirovarga/bl">bl</a>
+    </div>
+  </footer>
 </body>
 
 </html>

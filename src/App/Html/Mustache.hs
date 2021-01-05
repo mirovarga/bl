@@ -82,7 +82,7 @@ tagToFile dir (TagPage t posts) = do
                )
         ]
   where
-    title' = "Posts tagged with '" <> t <> "'" :: T.Text
+    title' = "Posts tagged '" <> t <> "'" :: T.Text
 
 copyAssets :: FilePath -> IO ()
 copyAssets dir = do
