@@ -15,7 +15,7 @@ main :: IO ()
 main = do
   [srcDir] <- getArgs
 
-  mds <- mdFiles srcDir >>= mapM readFile
+  mds <- mdFiles (joinPath [srcDir, "posts"]) >>= mapM readFile
   let posts = mdToPost . M.Markdown . pack <$> mds
 
   prepareDirs srcDir
