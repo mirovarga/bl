@@ -15,18 +15,31 @@ main :: IO ()
 main = do
   [srcDir] <- getArgs
 
-  mds <- mdFiles (joinPath [srcDir, "posts"]) >>= mapM readFile
-  let posts = mdToPost . M.Markdown . pack <$> mds
-
   prepareDirs srcDir
 
-  indexToFile srcDir . IndexPage $ newestFirst posts
-  mapM_ (postToFile srcDir . PostPage) posts
+  posts <- mdsToPosts srcDir
+  generateIndexPage srcDir posts
+  generatePostPages srcDir posts
+  generateTagPages srcDir posts
+
+  copyAssets srcDir
+
+generateIndexPage :: FilePath -> [Post] -> IO ()
+generateIndexPage srcDir posts = indexToFile srcDir . IndexPage $ newestFirst posts
+
+generatePostPages :: FilePath -> [Post] -> IO ()
+generatePostPages srcDir = mapM_ (postToFile srcDir . PostPage)
+
+generateTagPages :: FilePath -> [Post] -> IO ()
+generateTagPages srcDir posts =
   mapM_
     (tagToFile srcDir . (\t -> TagPage t (newestFirst $ withTag t posts)))
     (allTags posts)
 
-  copyAssets srcDir
+mdsToPosts :: FilePath -> IO [Post]
+mdsToPosts srcDir = do
+  mds <- mdFiles (joinPath [srcDir, "posts"]) >>= mapM readFile
+  return $ mdToPost . M.Markdown . pack <$> mds
 
 mdFiles :: FilePath -> IO [FilePath]
 mdFiles dir = do
