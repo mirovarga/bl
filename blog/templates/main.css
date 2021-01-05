@@ -1,6 +1,6 @@
 body {
   margin: 0 auto;
-  max-width: 700px;
+  max-width: 60ch;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   font-size: 1.2em;
   line-height: 150%;
@@ -46,6 +46,8 @@ footer .promo {
 }
 
 header, footer {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
   text-transform: uppercase;
 }
 
@@ -55,7 +57,8 @@ header, footer {
 }
 
 header, .content, footer {
-  padding: 0.25em;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
 h1, h2 {
@@ -79,17 +82,19 @@ a {
 }
 
 a:hover {
-  text-decoration: underline;
+  font-weight: bolder;
 }
 
 blockquote {
   font-style: italic;
   border-left: thin solid lightgray;
   padding-left: 1em;
+  margin: 0;
 }
 
 .meta {
   color: gray;
+  font-style: italic;
   text-align: center;
 }
 

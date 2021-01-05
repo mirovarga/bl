@@ -18,12 +18,12 @@ What I looked for:
 1. *No installation*. Just download a binary and that's all.
 
 2. *Easy to use*. Simply create a Markdown file in the posts directory and
-that's enough to add a new post. No need for databases, projects,
-configurations, etc.
+   that's enough to add a new post. No need for databases, projects,
+   configurations, etc.
 
 3. *No metadata*. No need to include special metadata in posts, like title, date
-or tags. It should be possible to parse these things from the post structure. In
-other words, I wanted a post to look like a post on its own.
+   or tags. It should be possible to parse these things from the post structure.
+   In other words, I wanted a post to look like a post on its own.
 
 ## Introducing LitePub
 
