@@ -20,7 +20,6 @@ import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.IO as TLIO
 import Data.Time
-import GHC.Generics
 import Lucid
 import System.Directory
 import System.FilePath
