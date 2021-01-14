@@ -1,61 +1,39 @@
-{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module App.Markdown
-  ( Markdown (Markdown),
-    mdToPost,
-  )
-where
+module App.Markdown (mdToPost) where
 
-import App.Post as P
-import Data.Char hiding (toLower)
-import Data.Text hiding (filter, head)
+import App.Post
+import Data.Aeson
+import Data.Text hiding (last)
 import Data.Time
-import Text.ParserCombinators.ReadP
+import GHC.Generics
+import Text.MMark
 
-newtype Markdown = Markdown Text deriving (Show)
+mdToPost :: Text -> Maybe Post
+mdToPost = mdToPost' . parseYamlMd
 
-mdToPost :: App.Markdown.Markdown -> Post
-mdToPost (App.Markdown.Markdown md) = fst . head . readP_to_S postP $ unpack md
+data FrontMatter = FrontMatter
+  { title :: Text,
+    created :: Maybe UTCTime,
+    tags :: Maybe [Text]
+  }
+  deriving (Show, FromJSON, Generic)
 
-postP :: ReadP Post
-postP = do
-  title <- titleP
-  created <- createdP
-  tags <- option [] tagsP
-  (App.Markdown.Markdown md) <- contentP
-  return $ Post {title, created, tags, content = P.Markdown md}
-
-titleP :: ReadP Text
-titleP = do
-  skipSpaces
-  char '#'
-  skipSpaces
-  pack <$> manyTill printableP newlineP
+parseYamlMd :: Text -> (Maybe FrontMatter, Maybe Content)
+parseYamlMd yamlMd = case parse "yamlMd" yamlMd of
+  Left e -> error $ show e
+  Right yaml -> case fromJSON <$> projectYaml yaml of
+    Nothing -> (Nothing, Nothing)
+    Just yamlMd' -> case yamlMd' of
+      Error e -> error $ show e
+      Success yaml' -> (Just yaml', (Just . Markdown . extractMd) yamlMd)
   where
-    newlineP = satisfy (== '\n')
+    extractMd = strip . last . splitOn "---"
 
-createdP :: ReadP (Maybe UTCTime)
-createdP = do
-  skipSpaces
-  char '*'
-  parseDate . pack <$> manyTill printableP (char '*')
-  where
-    parseDate = parseTimeM True defaultTimeLocale "%b %e, %Y" . unpack
-
-tagsP :: ReadP [Text]
-tagsP = do
-  skipSpaces
-  char '*'
-  tags <- pack <$> manyTill printableP (char '*')
-  return $ Prelude.map strip (splitOn "," tags)
-
-contentP :: ReadP App.Markdown.Markdown
-contentP = do
-  skipSpaces
-  App.Markdown.Markdown . pack <$> manyTill p eof
-  where
-    p = satisfy (\c -> isPrint c || c == '\n')
-
-printableP :: ReadP Char
-printableP = satisfy isPrint
+mdToPost' :: (Maybe FrontMatter, Maybe Content) -> Maybe Post
+mdToPost' (Just (FrontMatter t c Nothing), Just co) = Just $ Post t c [] co
+mdToPost' (Just (FrontMatter t c (Just ts)), Just co) = Just $ Post t c ts co
+mdToPost' (Nothing, _) = Nothing
+mdToPost' (_, Nothing) = Nothing

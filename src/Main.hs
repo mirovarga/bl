@@ -4,8 +4,9 @@
 module Main (main) where
 
 import App.Html.Mustache
-import App.Markdown as M
+import App.Markdown
 import App.Post
+import Data.Maybe
 import Data.Text hiding (filter, map)
 import System.Directory
 import System.Environment
@@ -39,7 +40,7 @@ generateTagPages srcDir posts =
 mdsToPosts :: FilePath -> IO [Post]
 mdsToPosts srcDir = do
   mds <- mdFiles (joinPath [srcDir, "posts"]) >>= mapM readFile
-  return $ mdToPost . M.Markdown . pack <$> mds
+  return $ fromMaybe (Post "" Nothing [] (Markdown "")) . mdToPost . pack <$> mds
 
 mdFiles :: FilePath -> IO [FilePath]
 mdFiles dir = do

@@ -1,8 +1,8 @@
-# From LitePub to bl, from Go to Haskell
-
-*Jan 1, 2021*
-
-*LitePub, bl, Go, Haskell*
+---
+title: From LitePub to bl, from Go to Haskell
+created: 2021-01-01T00:00:00Z
+tags: [LitePub, bl, Go, Haskell]
+---
 
 ## The Short Story
 

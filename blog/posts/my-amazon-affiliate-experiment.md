@@ -1,8 +1,8 @@
-# My Amazon Affiliate Experiment
-
-*Mar 27, 2015*
-
-*Affiliate, Go*
+---
+title: My Amazon Affiliate Experiment
+created: 2015-03-27T00:00:00Z
+tags: [Affiliate, Go]
+---
 
 On Mar 8, 2015, inspired by reading about affiliate marketing (mostly on
 [Reddit](http://reddit.com/r/entrepreneur)), I came up with a ~~great~~ idea that

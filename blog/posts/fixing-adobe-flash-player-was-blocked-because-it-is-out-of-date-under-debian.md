@@ -1,8 +1,8 @@
-# Fixing 'Adobe Flash Player was blocked because it is out of date' under Debian
-
-*Jun 13, 2017*
-
-*Linux, How-to*
+---
+title: Fixing 'Adobe Flash Player was blocked because it is out of date' under Debian
+created: 2017-06-13T00:00:00Z
+tags: [Linux, How-to]
+---
 
 After updating Chromium to version 59 under Debian 64 I was getting a message
 saying that 'Adobe Flash Player was blocked because it is out of date' whenever

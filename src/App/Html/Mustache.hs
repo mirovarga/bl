@@ -23,7 +23,7 @@ import Data.Time
 import Lucid
 import System.Directory
 import System.FilePath
-import qualified Text.MMark as MD
+import Text.MMark
 import Text.Mustache
 
 newtype IndexPage = IndexPage [Post]
@@ -107,9 +107,9 @@ instance {-# OVERLAPPING #-} ToJSON (Maybe UTCTime) where
     Nothing -> ""
 
 instance ToJSON Content where
-  toJSON (Markdown md) = case MD.parse "md" md of
+  toJSON (Markdown md) = case parse "md" md of
     Left err -> error $ show err
-    Right md -> toJSON . renderText $ MD.render md
+    Right md -> toJSON . renderText $ render md
 
 slug :: T.Text -> T.Text
 slug = T.toLower . T.map dashIfNotAlphaNum

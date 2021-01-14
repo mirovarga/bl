@@ -10,8 +10,9 @@ data Post = Post
     tags :: [Text],
     content :: Content
   }
+  deriving (Show)
 
-newtype Content = Markdown Text
+newtype Content = Markdown Text deriving (Show)
 
 instance Eq Post where
   p == p' = title p == title p'
@@ -23,6 +24,7 @@ newestFirst :: [Post] -> [Post]
 newestFirst = reverse . sort
 
 allTags :: [Post] -> [Text]
+allTags [] = []
 allTags [p] = tags p
 allTags (p : ps) = nub $ tags p ++ allTags ps
 

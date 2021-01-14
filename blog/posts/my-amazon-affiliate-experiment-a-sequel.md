@@ -1,8 +1,8 @@
-# My Amazon Affiliate Experiment: A Sequel
-
-*Mar 30, 2015*
-
-*Affiliate, Go*
+---
+title: 'My Amazon Affiliate Experiment: A Sequel'
+created: 2015-03-30T00:00:00Z
+tags: [Affiliate, Go]
+---
 
 In the [previous post](/my-amazon-affiliate-experiment.html) I wrote about
 building a website to help people decide what to buy for their friends, family
