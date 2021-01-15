@@ -1,5 +1,6 @@
 ---
 title: From LitePub to bl, from Go to Haskell
+description: Starting yesterday, I generate this blog with bl instead of LitePub.
 created: 2021-01-01T00:00:00Z
 tags: [LitePub, bl, Go, Haskell]
 ---

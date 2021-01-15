@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module App.Markdown (mdToPost) where
 
@@ -14,14 +15,15 @@ import Text.MMark
 mdToPost :: Text -> Maybe Post
 mdToPost = mdToPost' . parseYamlMd
 
-data FrontMatter = FrontMatter
+data Metadata = Metadata
   { title :: Text,
+    description :: Maybe Text,
     created :: Maybe UTCTime,
     tags :: Maybe [Text]
   }
   deriving (Show, FromJSON, Generic)
 
-parseYamlMd :: Text -> (Maybe FrontMatter, Maybe Content)
+parseYamlMd :: Text -> (Maybe Metadata, Maybe Content)
 parseYamlMd yamlMd = case parse "yamlMd" yamlMd of
   Left e -> error $ show e
   Right yaml -> case fromJSON <$> projectYaml yaml of
@@ -32,8 +34,8 @@ parseYamlMd yamlMd = case parse "yamlMd" yamlMd of
   where
     extractMd = strip . last . splitOn "---"
 
-mdToPost' :: (Maybe FrontMatter, Maybe Content) -> Maybe Post
-mdToPost' (Just (FrontMatter t c Nothing), Just co) = Just $ Post t c [] co
-mdToPost' (Just (FrontMatter t c (Just ts)), Just co) = Just $ Post t c ts co
+mdToPost' :: (Maybe Metadata, Maybe Content) -> Maybe Post
+mdToPost' (Just Metadata {..}, Just content) =
+  Just $ Post title description created tags content
 mdToPost' (Nothing, _) = Nothing
 mdToPost' (_, Nothing) = Nothing

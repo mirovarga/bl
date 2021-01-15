@@ -1,5 +1,8 @@
 ---
 title: My Amazon Affiliate Experiment
+description: On Mar 8, 2015, inspired by reading about affiliate marketing
+  (mostly on Reddit), I came up with an idea that it couldn't be so difficult to
+  earn money this way and that I would give it a try.
 created: 2015-03-27T00:00:00Z
 tags: [Affiliate, Go]
 ---

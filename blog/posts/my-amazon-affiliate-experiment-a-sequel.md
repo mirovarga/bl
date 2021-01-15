@@ -1,5 +1,8 @@
 ---
 title: 'My Amazon Affiliate Experiment: A Sequel'
+description: In the previous post I wrote about building a website to help people
+  decide what to buy for their friends, family or themselves using the Amazon
+  product advertising API.
 created: 2015-03-30T00:00:00Z
 tags: [Affiliate, Go]
 ---

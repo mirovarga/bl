@@ -93,7 +93,6 @@ blockquote {
 }
 
 .meta {
-  color: gray;
   font-style: italic;
   text-align: center;
 }
@@ -102,4 +101,13 @@ code {
   font-size: 0.7em;
   background: none !important;
   padding: 0 !important;
+}
+
+article {
+  margin-top: 3em;
+}
+
+article>h1 {
+  font-size: 1.2em;
+  text-align: left;
 }

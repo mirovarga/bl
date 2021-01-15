@@ -51,7 +51,7 @@ indexToFile dir (IndexPage posts) = do
         ]
 
 postToFile :: FilePath -> PostPage -> IO ()
-postToFile dir (PostPage p@(Post t _ _ _)) = do
+postToFile dir (PostPage p@(Post t _ _ _ _)) = do
   layout <- compileMustacheFile $ joinPath [dir, "templates/layout.mustache"]
   post <- compileMustacheFile $ joinPath [dir, "templates/post.mustache"]
 
@@ -95,8 +95,9 @@ instance ToJSON Post where
   toJSON p =
     object
       [ "title" .= title p,
+        "description" .= description p,
         "created" .= created p,
-        "tags" .= (map (slug . T.toLower) $ tags p :: [T.Text]),
+        "tags" .= (map (slug . T.toLower) $ tags' p :: [T.Text]),
         "content" .= content p,
         "slug" .= (slug $ title p :: T.Text)
       ]

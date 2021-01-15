@@ -1,5 +1,7 @@
 ---
 title: Running CasperJS Scripts in Docker Containers
+description: I used to run the casperbox.com service (now shut down) that
+  enabled to run CasperJS scripts online.
 created: 2015-06-16T00:00:00Z
 tags: [Docker, JavaScript]
 ---

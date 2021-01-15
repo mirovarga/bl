@@ -40,7 +40,12 @@ generateTagPages srcDir posts =
 mdsToPosts :: FilePath -> IO [Post]
 mdsToPosts srcDir = do
   mds <- mdFiles (joinPath [srcDir, "posts"]) >>= mapM readFile
-  return $ fromMaybe (Post "" Nothing [] (Markdown "")) . mdToPost . pack <$> mds
+  return $
+    fromMaybe
+      (Post "" Nothing Nothing (Just []) (Markdown ""))
+      . mdToPost
+      . pack
+      <$> mds
 
 mdFiles :: FilePath -> IO [FilePath]
 mdFiles dir = do

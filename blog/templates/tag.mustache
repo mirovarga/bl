@@ -1,7 +1,17 @@
 <h1>{{title}}</h1>
 
-<ul>
-  {{#posts}}
-  <li><a href="/{{slug}}.html">{{title}}</a></li>
-  {{/posts}}
-</ul>
+{{#posts}}
+<article>
+  <h1><a href="/{{slug}}.html">{{title}}</a></h1>
+
+  <em>
+    {{created}}
+
+    {{#tags}}
+    <a href="/tags/{{.}}.html">{{.}}</a>
+    {{/tags}}
+  </em>
+
+  <p>{{description}}</p>
+</article>
+{{/posts}}

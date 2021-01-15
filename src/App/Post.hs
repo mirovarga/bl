@@ -1,13 +1,15 @@
 module App.Post where
 
 import Data.List
+import Data.Maybe
 import Data.Text hiding (filter, reverse)
 import Data.Time
 
 data Post = Post
   { title :: Text,
+    description :: Maybe Text,
     created :: Maybe UTCTime,
-    tags :: [Text],
+    tags :: Maybe [Text],
     content :: Content
   }
   deriving (Show)
@@ -25,8 +27,11 @@ newestFirst = reverse . sort
 
 allTags :: [Post] -> [Text]
 allTags [] = []
-allTags [p] = tags p
-allTags (p : ps) = nub $ tags p ++ allTags ps
+allTags [p] = tags' p
+allTags (p : ps) = nub $ tags' p ++ allTags ps
 
 withTag :: Text -> [Post] -> [Post]
-withTag t = filter (\p -> t `elem` tags p)
+withTag t = filter (\p -> t `elem` tags' p)
+
+tags' :: Post -> [Text]
+tags' = fromMaybe [] . tags

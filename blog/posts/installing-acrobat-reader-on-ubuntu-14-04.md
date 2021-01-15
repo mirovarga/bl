@@ -1,5 +1,7 @@
 ---
 title: Installing Acrobat Reader on Ubuntu 14.04
+description: Yesterday I was generating some PDFs with attachments in Java and
+    needed to check if the attachments were really there.
 created: 2015-11-21T00:00:00Z
 tags: [Linux, How-to]
 ---
