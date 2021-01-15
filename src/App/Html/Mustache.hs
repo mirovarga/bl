@@ -51,14 +51,14 @@ indexToFile dir (IndexPage posts) = do
         ]
 
 postToFile :: FilePath -> PostPage -> IO ()
-postToFile dir (PostPage p@(Post title _ _ _)) = do
+postToFile dir (PostPage p@(Post t _ _ _)) = do
   layout <- compileMustacheFile $ joinPath [dir, "templates/layout.mustache"]
   post <- compileMustacheFile $ joinPath [dir, "templates/post.mustache"]
 
-  TLIO.writeFile (joinPath [dir, "static", T.unpack (slug title) <> ".html"]) $
+  TLIO.writeFile (joinPath [dir, "static", T.unpack (slug t) <> ".html"]) $
     renderMustache layout $
       object
-        [ "title" .= title,
+        [ "title" .= t,
           "content" .= (renderMustache post $ toJSON p :: TL.Text)
         ]
 
@@ -108,8 +108,8 @@ instance {-# OVERLAPPING #-} ToJSON (Maybe UTCTime) where
 
 instance ToJSON Content where
   toJSON (Markdown md) = case parse "md" md of
-    Left err -> error $ show err
-    Right md -> toJSON . renderText $ render md
+    Left e -> error $ show e
+    Right md' -> toJSON . renderText $ render md'
 
 slug :: T.Text -> T.Text
 slug = T.toLower . T.map dashIfNotAlphaNum
