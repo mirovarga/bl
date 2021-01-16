@@ -17,7 +17,6 @@ import App.Post
 import Data.Aeson
 import Data.Char
 import qualified Data.Text as T
-import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.IO as TLIO
 import Data.Time
 import Lucid
@@ -40,48 +39,33 @@ prepareDirs dir = do
 
 indexToFile :: FilePath -> IndexPage -> IO ()
 indexToFile dir (IndexPage posts) = do
-  layout <- compileMustacheFile $ joinPath [dir, "templates/layout.mustache"]
-  index <- compileMustacheFile $ joinPath [dir, "templates/index.mustache"]
+  template <- compileMustacheDir "index" $ joinPath [dir, "templates"]
 
   TLIO.writeFile (joinPath [dir, "static/index.html"]) $
-    renderMustache layout $
+    renderMustache template $
       object
         [ "title" .= ("Miro Varga" :: T.Text),
-          "content" .= (renderMustache index $ object ["posts" .= toJSON posts] :: TL.Text)
+          "posts" .= toJSON posts
         ]
 
 postToFile :: FilePath -> PostPage -> IO ()
 postToFile dir (PostPage p@(Post t _ _ _ _)) = do
-  layout <- compileMustacheFile $ joinPath [dir, "templates/layout.mustache"]
-  post <- compileMustacheFile $ joinPath [dir, "templates/post.mustache"]
+  template <- compileMustacheDir "post" $ joinPath [dir, "templates"]
 
   TLIO.writeFile (joinPath [dir, "static", T.unpack (slug t) <> ".html"]) $
-    renderMustache layout $
-      object
-        [ "title" .= t,
-          "content" .= (renderMustache post $ toJSON p :: TL.Text)
-        ]
+    renderMustache template $
+      toJSON p
 
 tagToFile :: FilePath -> TagPage -> IO ()
 tagToFile dir (TagPage t posts) = do
-  layout <- compileMustacheFile $ joinPath [dir, "templates/layout.mustache"]
-  tag <- compileMustacheFile $ joinPath [dir, "templates/tag.mustache"]
+  template <- compileMustacheDir "tag" $ joinPath [dir, "templates"]
 
   TLIO.writeFile (joinPath [dir, "static/tags/" <> T.unpack (T.toLower t) <> ".html"]) $
-    renderMustache layout $
+    renderMustache template $
       object
-        [ "title" .= title',
-          "content"
-            .= ( renderMustache tag $
-                   object
-                     [ "title" .= title',
-                       "posts" .= toJSON posts
-                     ] ::
-                   TL.Text
-               )
+        [ "title" .= ("Posts tagged '" <> t <> "'" :: T.Text),
+          "posts" .= toJSON posts
         ]
-  where
-    title' = "Posts tagged '" <> t <> "'" :: T.Text
 
 copyAssets :: FilePath -> IO ()
 copyAssets dir = do

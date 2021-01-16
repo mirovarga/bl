@@ -1,17 +1,33 @@
-<h1>Posts</h1>
+<!DOCTYPE html>
 
-{{#posts}}
-<article>
-  <h1><a href="/{{slug}}.html">{{title}}</a></h1>
+<html>
 
-  <em>
-    {{created}}
+{{> _head}}
 
-    {{#tags}}
-    <a href="/tags/{{.}}.html">{{.}}</a>
-    {{/tags}}
-  </em>
+<body>
+  {{> _header}}
 
-  <p>{{description}}</p>
-</article>
-{{/posts}}
+  <div class="content">
+    <h1>Posts</h1>
+
+    {{#posts}}
+    <article>
+      <h1><a href="/{{slug}}.html">{{title}}</a></h1>
+
+      <em>
+        {{created}}
+
+        {{#tags}}
+        <a href="/tags/{{.}}.html">{{.}}</a>
+        {{/tags}}
+      </em>
+
+      <p>{{description}}</p>
+    </article>
+    {{/posts}}
+  </div>
+
+  {{> _footer}}
+</body>
+
+</html>
