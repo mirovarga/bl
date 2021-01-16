@@ -10,6 +10,7 @@ data Post = Post
     description :: Maybe Text,
     created :: Maybe UTCTime,
     tags :: Maybe [Text],
+    draft :: Maybe Bool,
     content :: Content
   }
   deriving (Show)

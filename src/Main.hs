@@ -6,6 +6,7 @@ module Main (main) where
 import App.Html.Mustache
 import App.Markdown
 import App.Post
+import Control.Monad
 import Data.Maybe
 import Data.Text hiding (filter, map)
 import System.Directory
@@ -19,9 +20,10 @@ main = do
   prepareDirs srcDir
 
   posts <- mdsToPosts srcDir
-  generateIndexPage srcDir posts
-  generatePostPages srcDir posts
-  generateTagPages srcDir posts
+  let nonDraftPosts = filter (not . fromMaybe False . draft) posts
+  generateIndexPage srcDir nonDraftPosts
+  generatePostPages srcDir nonDraftPosts
+  generateTagPages srcDir nonDraftPosts
 
   copyAssets srcDir
 
@@ -42,7 +44,7 @@ mdsToPosts srcDir = do
   mds <- mdFiles (joinPath [srcDir, "posts"]) >>= mapM readFile
   return $
     fromMaybe
-      (Post "" Nothing Nothing (Just []) (Markdown ""))
+      (Post "" Nothing Nothing Nothing Nothing (Markdown ""))
       . mdToPost
       . pack
       <$> mds

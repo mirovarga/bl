@@ -49,10 +49,10 @@ indexToFile dir (IndexPage posts) = do
         ]
 
 postToFile :: FilePath -> PostPage -> IO ()
-postToFile dir (PostPage p@(Post t _ _ _ _)) = do
+postToFile dir (PostPage p) = do
   template <- compileMustacheDir "post" $ joinPath [dir, "templates"]
 
-  TLIO.writeFile (joinPath [dir, "static", T.unpack (slug t) <> ".html"]) $
+  TLIO.writeFile (joinPath [dir, "static", T.unpack (slug $ title p) <> ".html"]) $
     renderMustache template $
       toJSON p
 
