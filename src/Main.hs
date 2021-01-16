@@ -6,7 +6,6 @@ module Main (main) where
 import App.Html.Mustache
 import App.Markdown
 import App.Post
-import Control.Monad
 import Data.Maybe
 import Data.Text hiding (filter, map)
 import System.Directory
