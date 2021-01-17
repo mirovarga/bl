@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module App.Html.Mustache
   ( IndexPage (IndexPage),
@@ -15,10 +16,9 @@ where
 
 import App.Post
 import Data.Aeson
-import Data.Char
 import qualified Data.Text as T
 import qualified Data.Text.Lazy.IO as TLIO
-import Data.Time
+import Data.Time (UTCTime, defaultTimeLocale, formatTime)
 import Lucid
 import System.Directory
 import System.FilePath
@@ -30,6 +30,36 @@ newtype IndexPage = IndexPage [Post]
 newtype PostPage = PostPage Post
 
 data TagPage = TagPage T.Text [Post]
+
+newtype HtmlPost = HtmlPost Post
+
+instance ToJSON HtmlPost where
+  toJSON (HtmlPost p@Post {..}) =
+    object
+      [ "title" .= title,
+        "description" .= description,
+        "created" .= created,
+        "tags"
+          .= zipWith
+            (\t t' -> object ["camelCase" .= t, "lowerCase" .= t'])
+            (tags' p)
+            (map T.toLower (tags' p)),
+        "draft" .= draft,
+        "key" .= key,
+        "content" .= HtmlContent content
+      ]
+
+instance {-# OVERLAPPING #-} ToJSON (Maybe UTCTime) where
+  toJSON d = case d of
+    Just d' -> toJSON . T.pack $ formatTime defaultTimeLocale "%b %e, %Y" d'
+    Nothing -> ""
+
+newtype HtmlContent = HtmlContent Content
+
+instance ToJSON HtmlContent where
+  toJSON (HtmlContent (Markdown md)) = case parse "md" md of
+    Left e -> error $ show e
+    Right md' -> toJSON . renderText $ render md'
 
 prepareDirs :: FilePath -> IO ()
 prepareDirs dir = do
@@ -45,7 +75,7 @@ indexToFile dir (IndexPage posts) = do
     renderMustache template $
       object
         [ "title" .= ("Miro Varga" :: T.Text),
-          "posts" .= toJSON posts
+          "posts" .= map HtmlPost posts
         ]
 
 postToFile :: FilePath -> PostPage -> IO ()
@@ -54,7 +84,7 @@ postToFile dir (PostPage p) = do
 
   TLIO.writeFile (joinPath [dir, "static", T.unpack (slug $ title p) <> ".html"]) $
     renderMustache template $
-      toJSON p
+      toJSON $ HtmlPost p
 
 tagToFile :: FilePath -> TagPage -> IO ()
 tagToFile dir (TagPage t posts) = do
@@ -64,7 +94,7 @@ tagToFile dir (TagPage t posts) = do
     renderMustache template $
       object
         [ "title" .= ("Posts tagged '" <> t <> "'" :: T.Text),
-          "posts" .= toJSON posts
+          "posts" .= map HtmlPost posts
         ]
 
 copyAssets :: FilePath -> IO ()
@@ -74,29 +104,3 @@ copyAssets dir = do
   let filesWithDir = map (templatesDir </>) files
   let assets = filter (not . isExtensionOf ".mustache") filesWithDir
   mapM_ (\a -> copyFile a $ joinPath [dir, "static", takeFileName a]) assets
-
-instance ToJSON Post where
-  toJSON p =
-    object
-      [ "title" .= title p,
-        "description" .= description p,
-        "created" .= created p,
-        "tags" .= (map (slug . T.toLower) $ tags' p :: [T.Text]),
-        "content" .= content p,
-        "slug" .= (slug $ title p :: T.Text)
-      ]
-
-instance {-# OVERLAPPING #-} ToJSON (Maybe UTCTime) where
-  toJSON d = case d of
-    Just d' -> toJSON . T.pack $ formatTime defaultTimeLocale "%b %e, %Y" d'
-    Nothing -> ""
-
-instance ToJSON Content where
-  toJSON (Markdown md) = case parse "md" md of
-    Left e -> error $ show e
-    Right md' -> toJSON . renderText $ render md'
-
-slug :: T.Text -> T.Text
-slug = T.toLower . T.map dashIfNotAlphaNum
-  where
-    dashIfNotAlphaNum c = if isAlphaNum c then c else '-'
