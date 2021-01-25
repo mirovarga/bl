@@ -3,21 +3,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module App.Markdown
-  ( mdDirToPosts,
-    mdFileToPost,
-    mdFiles,
-    mdToPost,
-  )
-where
+module Lib.Markdown (mdDirToPosts) where
 
-import App.Post
 import Data.Aeson
 import Data.Maybe
 import Data.Text hiding (filter, last, map)
 import qualified Data.Text.IO as TIO
 import Data.Time
 import GHC.Generics
+import Lib.Post
 import System.Directory
 import System.FilePath
 import Text.MMark
@@ -49,12 +43,11 @@ data Metadata = Metadata
 
 parseYamlMd :: Text -> (Maybe Metadata, Maybe Content)
 parseYamlMd yamlMd = case parse "yamlMd" yamlMd of
-  Left e -> error $ show e
+  Left _ -> (Nothing, Nothing)
   Right yaml -> case fromJSON <$> projectYaml yaml of
     Nothing -> (Nothing, Nothing)
-    Just yamlMd' -> case yamlMd' of
-      Error e -> error $ show e
-      Success yaml' -> (Just yaml', (Just . Markdown . extractMd) yamlMd)
+    Just (Error _) -> (Nothing, Nothing)
+    Just (Success yaml') -> (Just yaml', (Just . Markdown . extractMd) yamlMd)
   where
     extractMd = strip . last . splitOn "---"
 

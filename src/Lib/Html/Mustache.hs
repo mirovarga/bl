@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module App.Html.Mustache
+module Lib.Html.Mustache
   ( IndexPage (IndexPage),
     PostPage (PostPage),
     TagPage (TagPage),
@@ -14,11 +14,11 @@ module App.Html.Mustache
   )
 where
 
-import App.Post
 import Data.Aeson
 import qualified Data.Text as T
 import qualified Data.Text.Lazy.IO as TLIO
 import Data.Time (UTCTime, defaultTimeLocale, formatTime)
+import Lib.Post
 import Lucid
 import System.Directory
 import System.FilePath
@@ -50,9 +50,8 @@ instance ToJSON HtmlPost where
       ]
 
 instance {-# OVERLAPPING #-} ToJSON (Maybe UTCTime) where
-  toJSON d = case d of
-    Just d' -> toJSON . T.pack $ formatTime defaultTimeLocale "%b %e, %Y" d'
-    Nothing -> ""
+  toJSON (Just d) = toJSON . T.pack $ formatTime defaultTimeLocale "%b %e, %Y" d
+  toJSON Nothing = ""
 
 newtype HtmlContent = HtmlContent Content
 
@@ -69,10 +68,10 @@ prepareDirs dir = do
 
 indexToFile :: FilePath -> IndexPage -> IO ()
 indexToFile dir (IndexPage posts) = do
-  template <- compileMustacheDir "index" $ joinPath [dir, "templates"]
-
-  TLIO.writeFile (joinPath [dir, "static/index.html"]) $
-    renderMustache template $
+  template <- compileMustacheDir "index" (joinPath [dir, "templates"])
+  TLIO.writeFile
+    (joinPath [dir, "static", "index.html"])
+    $ renderMustache template $
       object
         [ "title" .= ("Miro Varga" :: T.Text),
           "posts" .= map HtmlPost posts
@@ -81,17 +80,16 @@ indexToFile dir (IndexPage posts) = do
 postToFile :: FilePath -> PostPage -> IO ()
 postToFile dir (PostPage p) = do
   template <- compileMustacheDir "post" $ joinPath [dir, "templates"]
-
-  TLIO.writeFile (joinPath [dir, "static", T.unpack (slug $ title p) <> ".html"]) $
-    renderMustache template $
-      toJSON $ HtmlPost p
+  TLIO.writeFile
+    (joinPath [dir, "static", T.unpack (slug $ title p) <> ".html"])
+    $ renderMustache template $ toJSON $ HtmlPost p
 
 tagToFile :: FilePath -> TagPage -> IO ()
 tagToFile dir (TagPage t posts) = do
   template <- compileMustacheDir "tag" $ joinPath [dir, "templates"]
-
-  TLIO.writeFile (joinPath [dir, "static/tags/" <> T.unpack (T.toLower t) <> ".html"]) $
-    renderMustache template $
+  TLIO.writeFile
+    (joinPath [dir, "static/tags/" <> T.unpack (T.toLower t) <> ".html"])
+    $ renderMustache template $
       object
         [ "title" .= ("Posts tagged '" <> t <> "'" :: T.Text),
           "posts" .= map HtmlPost posts

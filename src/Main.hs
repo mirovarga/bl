@@ -1,25 +1,28 @@
 module Main (main) where
 
-import App.Html.Mustache
-import App.Markdown
-import App.Post
 import Data.Maybe
+import Lib.Html.Mustache
+import Lib.Markdown
+import Lib.Post
 import System.Environment
 import System.FilePath
 
 main :: IO ()
 main = do
-  [srcDir] <- getArgs
+  [dir] <- getArgs
+  generateHtml dir
 
-  prepareDirs srcDir
+generateHtml :: FilePath -> IO ()
+generateHtml dir = do
+  prepareDirs dir
 
-  posts <- mdDirToPosts $ joinPath [srcDir, "posts"]
+  posts <- mdDirToPosts $ joinPath [dir, "posts"]
   let nonDraftPosts = filter (not . fromMaybe False . draft) $ catMaybes posts
-  generateIndexPage srcDir nonDraftPosts
-  generatePostPages srcDir nonDraftPosts
-  generateTagPages srcDir nonDraftPosts
+  generateIndexPage dir nonDraftPosts
+  generatePostPages dir nonDraftPosts
+  generateTagPages dir nonDraftPosts
 
-  copyAssets srcDir
+  copyAssets dir
 
 generateIndexPage :: FilePath -> [Post] -> IO ()
 generateIndexPage srcDir posts = indexToFile srcDir . IndexPage $ newestFirst posts

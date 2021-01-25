@@ -21,9 +21,9 @@ executable bl
   hs-source-dirs:   src
   main-is:          Main.hs
   other-modules:
-    App.Html.Mustache
-    App.Markdown
-    App.Post
+    Lib.Html.Mustache
+    Lib.Markdown
+    Lib.Post
 
   -- other-extensions:
   build-depends:

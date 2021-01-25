@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module App.Post where
+module Lib.Post where
 
 import Data.Aeson
 import Data.Char
@@ -48,6 +48,11 @@ slug :: T.Text -> T.Text
 slug = T.toLower . T.map dashIfNotAlphaNum
   where
     dashIfNotAlphaNum c = if isAlphaNum c then c else '-'
+
+withSlug :: T.Text -> [Post] -> Maybe Post
+withSlug s ps = case filter (\p -> s == key p) ps of
+  [] -> Nothing
+  (p' : _) -> Just p'
 
 newestFirst :: [Post] -> [Post]
 newestFirst = reverse . oldestFirst
