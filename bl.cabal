@@ -21,6 +21,7 @@ executable bl
   hs-source-dirs:   src
   main-is:          Main.hs
   other-modules:
+    API
     Lib.Html.Mustache
     Lib.Markdown
     Lib.Post
@@ -28,13 +29,15 @@ executable bl
   -- other-extensions:
   build-depends:
       aeson
-    , base       >=4.13 && <4.14
+    , base            >=4.13 && <4.14
     , directory
     , filepath
     , lucid
     , mmark
+    , servant-server
     , stache
     , text
     , time
+    , warp
 
   default-language: Haskell2010
