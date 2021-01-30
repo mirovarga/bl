@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
-module API (runAPI) where
+module API (runAPI, runStatic) where
 
 import Control.Monad.IO.Class
 import Data.Maybe
@@ -45,3 +45,14 @@ runAPI dir port = run port serverApp
 
     serverApp :: Application
     serverApp = serve postsAPI $ server dir
+
+type StaticAPI = Raw
+
+runStatic :: FilePath -> Int -> IO ()
+runStatic dir port = run port serverApp
+  where
+    staticAPI :: Proxy StaticAPI
+    staticAPI = Proxy
+
+    serverApp :: Application
+    serverApp = serve staticAPI $ serveDirectoryFileServer dir
