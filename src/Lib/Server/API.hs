@@ -1,15 +1,14 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
-module API (runAPI, runStatic) where
+module Lib.Server.API (run) where
 
 import Control.Monad.IO.Class
 import Data.Maybe
 import Data.Text hiding (filter)
 import Lib.Markdown
 import Lib.Post
-import Network.Wai.Handler.Warp
+import qualified Network.Wai.Handler.Warp as W
 import Servant hiding (Post)
 import System.FilePath
 
@@ -37,22 +36,11 @@ server dir = posts :<|> postWithKey
         . catMaybes
         <$> mdDirToPosts (joinPath [dir, "posts"])
 
-runAPI :: FilePath -> Int -> IO ()
-runAPI dir port = run port serverApp
+run :: FilePath -> Int -> IO ()
+run dir port = W.run port serverApp
   where
     postsAPI :: Proxy PostsAPI
     postsAPI = Proxy
 
     serverApp :: Application
     serverApp = serve postsAPI $ server dir
-
-type StaticAPI = Raw
-
-runStatic :: FilePath -> Int -> IO ()
-runStatic dir port = run port serverApp
-  where
-    staticAPI :: Proxy StaticAPI
-    staticAPI = Proxy
-
-    serverApp :: Application
-    serverApp = serve staticAPI $ serveDirectoryFileServer dir

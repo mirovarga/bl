@@ -1,37 +1,46 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeOperators #-}
+
 module Main (main) where
 
-import Data.Maybe
-import Lib.Html.Mustache
-import Lib.Markdown
-import Lib.Post
-import System.Environment
-import System.FilePath
+import qualified Lib.SSG as SSG
+import qualified Lib.Server.API as API
+import qualified Lib.Server.File as File
+import Options.Generic
 
 main :: IO ()
-main = do
-  [dir] <- getArgs
-  generateHtml dir
+main = runCommand =<< unwrapRecord "bl 0.1.0 [github.com/mirovarga/bl]"
 
-generateHtml :: FilePath -> IO ()
-generateHtml dir = do
-  prepareDirs dir
+runCommand :: Command Unwrapped -> IO ()
+runCommand (Build dir) = SSG.generateHtml dir
+runCommand (FileServer dir port False) = File.run dir port
+runCommand (FileServer dir port True) = SSG.generateHtml dir >> File.run dir port
+runCommand (APIServer dir port) = API.run dir port
 
-  posts <- mdDirToPosts $ joinPath [dir, "posts"]
-  let nonDraftPosts = filter (not . fromMaybe False . draft) $ catMaybes posts
-  generateIndexPage dir nonDraftPosts
-  generatePostPages dir nonDraftPosts
-  generateTagPages dir nonDraftPosts
+data Command w
+  = Build
+      { dir :: w ::: String <?> "Path to the directory with posts and templates (default: .)" <!> "."
+      }
+  | FileServer
+      { dir :: w ::: String <?> "Path to the directory with posts and templates (default: .)" <!> ".",
+        port :: w ::: Int <?> "Port to listen on (default: 2703)" <!> "2703",
+        rebuild :: w ::: Bool <?> "Rebuild before serving (default: False)" <!> "False"
+      }
+  | APIServer
+      { dir :: w ::: String <?> "Path to the directory with posts and templates (default: .)" <!> ".",
+        port :: w ::: Int <?> "Port to listen on (default: 2703)" <!> "2703"
+      }
+  deriving (Generic)
 
-  copyAssets dir
+deriving instance Show (Command Unwrapped)
 
-generateIndexPage :: FilePath -> [Post] -> IO ()
-generateIndexPage srcDir posts = indexToFile srcDir . IndexPage $ newestFirst posts
-
-generatePostPages :: FilePath -> [Post] -> IO ()
-generatePostPages srcDir = mapM_ (postToFile srcDir . PostPage)
-
-generateTagPages :: FilePath -> [Post] -> IO ()
-generateTagPages srcDir posts =
-  mapM_
-    (tagToFile srcDir . (\t -> TagPage t (newestFirst $ withTag t posts)))
-    (allTags posts)
+instance ParseRecord (Command Wrapped) where
+  parseRecord =
+    parseRecordWithModifiers
+      defaultModifiers
+        { shortNameModifier = firstLetter
+        }
