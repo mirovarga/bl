@@ -14,6 +14,7 @@ module Lib.Html.Mustache
   )
 where
 
+import Control.Monad
 import Data.Aeson
 import qualified Data.Text as T
 import qualified Data.Text.Lazy.IO as TLIO
@@ -22,6 +23,7 @@ import Lib.Post
 import Lucid
 import System.Directory
 import System.FilePath
+import System.Path
 import Text.MMark
 import Text.Mustache
 
@@ -97,8 +99,11 @@ tagToFile dir (TagPage t posts) = do
 
 copyAssets :: FilePath -> IO ()
 copyAssets dir = do
-  let templatesDir = joinPath [dir, "templates"]
-  files <- listDirectory templatesDir
-  let filesWithDir = map (templatesDir </>) files
-  let assets = filter (not . isExtensionOf ".mustache") filesWithDir
-  mapM_ (\a -> copyFile a $ joinPath [dir, "static", takeFileName a]) assets
+  copyDir templatesDir staticDir
+  mapM_ removeFile =<< templates
+  where
+    templatesDir = joinPath [dir, "templates"]
+    staticDir = joinPath [dir, "static"]
+    entries = listDirectory staticDir
+    entriesWithDir = mapM (return . (staticDir </>)) =<< entries
+    templates = filterM (return . isExtensionOf ".mustache") =<< entriesWithDir
