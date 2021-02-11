@@ -73,11 +73,7 @@ indexToFile dir (IndexPage posts) = do
   template <- compileMustacheDir "index" (joinPath [dir, "templates"])
   TLIO.writeFile
     (joinPath [dir, "static", "index.html"])
-    $ renderMustache template $
-      object
-        [ "title" .= ("Miro Varga" :: T.Text),
-          "posts" .= map HtmlPost posts
-        ]
+    $ renderMustache template $ toJSON $ map HtmlPost posts
 
 postToFile :: FilePath -> PostPage -> IO ()
 postToFile dir (PostPage p) = do
@@ -93,7 +89,7 @@ tagToFile dir (TagPage t posts) = do
     (joinPath [dir, "static/tags/" <> T.unpack (T.toLower t) <> ".html"])
     $ renderMustache template $
       object
-        [ "title" .= ("Posts tagged '" <> t <> "'" :: T.Text),
+        [ "tag" .= t,
           "posts" .= map HtmlPost posts
         ]
 
