@@ -5,6 +5,8 @@ readonly REST API.
 
 > It's a rewrite of [LitePub](https://github.com/mirovarga/litepub) in Haskell.
 
+## Table of Contents
+
 - [Overview](#overview)
 - [Creating a Blog](#creating-a-blog)
   - [Directory Structure](#directory-structure)
