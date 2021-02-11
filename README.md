@@ -78,7 +78,7 @@ For examples, see
 
 The primary data is the post object:
 
-```json
+```javascript
 {
   "title": "",
   "description": "",
@@ -97,7 +97,7 @@ The primary data is the post object:
 
 The `index.mustache` template is passed a list of post objects:
 
-```json
+```javascript
 [
     { /* ... */ }
 ]
@@ -105,14 +105,14 @@ The `index.mustache` template is passed a list of post objects:
 
 The `post.mustache` template is passed a single post object:
 
-```json
+```javascript
 [ /* ... */ ]
 ```
 
 The `tag.mustache` template is passed an object with the tag name and a list of
 post objects:
 
-```json
+```javascript
 {
   "tag": "",
   "posts": [
@@ -157,6 +157,8 @@ command:
 ```
 $ bl apiserver
 ```
+
+Now `curl http://localhost:2703/posts/0` to fetch the newest post.
 
 ### Endpoints
 
