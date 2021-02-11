@@ -126,7 +126,7 @@ post objects:
 
 ## Generating HTML Files
 
-To generate the HTML files for a blog `cd` to the blog's directory and use the
+To generate the HTML files for a blog, `cd` to the blog's directory and use the
 `build` command:
 
 ```
@@ -139,8 +139,8 @@ directory.
 
 ## Serving the Files
 
-`bl` includes a built-in file server. To start the server `cd` to the blog's
-directory snd use the `fileserver` command:
+`bl` includes a built-in file server. To start the server, `cd` to the blog's
+directory and use the `fileserver` command:
 
 ```
 $ bl fileserver
@@ -152,7 +152,7 @@ the generated blog.
 ## REST API
 
 In addition to generating HTML files and serving them, `bl` also provides a 
-readonly REST API to access the posts. 
+readonly REST API to access the posts.
 
 To start the API server, `cd` to the blog's directory and use the `apiserver`
 command:
