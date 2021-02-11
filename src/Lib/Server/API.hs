@@ -15,7 +15,7 @@ import System.FilePath
 type PostsAPI =
   "posts" :> QueryParam "tag" Text :> Get '[JSON] [Post]
     :<|> "posts" :> Capture "index" Int :> Get '[JSON] Post
-    :<|> "posts" :> Capture "slug" Text :> Get '[JSON] Post
+    :<|> "posts" :> Capture "key" Text :> Get '[JSON] Post
 
 server :: FilePath -> Server PostsAPI
 server dir = posts :<|> postWithIndex :<|> postWithKey
