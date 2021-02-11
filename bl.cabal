@@ -4,7 +4,7 @@ cabal-version:      >=1.10
 -- further documentation, see http://haskell.org/cabal/users-guide/
 
 name:               bl
-version:            0.1.0.0
+version:            0.1.0
 
 -- synopsis:
 -- description:
@@ -31,7 +31,7 @@ executable bl
   -- other-extensions:
   build-depends:
       aeson
-    , base              >=4.13 && <4.14
+    , base              >=4.13
     , directory
     , filepath
     , fsutils
