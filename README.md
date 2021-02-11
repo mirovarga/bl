@@ -43,6 +43,9 @@ templates/          # the templates and accompanying files (styles, scripts, ima
 static/             # the generated HTML files (plus copied accompanying files)
 ```
 
+> For examples, see
+  [my blog](https://github.com/mirovarga/mirovarga.com).
+
 ### Posts
 
 Posts are written in [Markdown](https://www.markdownguide.org/) with a YAML
@@ -59,8 +62,8 @@ key:          # optional, default slugified title
 ---
 ```
 
-For examples, see
-[posts of my blog](https://github.com/mirovarga/mirovarga.com/tree/master/posts).
+> For examples, see
+  [posts of my blog](https://github.com/mirovarga/mirovarga.com/tree/master/posts).
 
 ### Templates
 
@@ -71,8 +74,8 @@ three required files in the `templates` directory:
 - `post.mustache` for generating a single post
 - `tag.mustache` for generating a tag page
 
-For examples, see
-[templates of my blog](https://github.com/mirovarga/mirovarga.com/tree/master/templates).
+> For examples, see
+  [templates of my blog](https://github.com/mirovarga/mirovarga.com/tree/master/templates).
 
 #### Data Passed to Templates
 
