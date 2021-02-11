@@ -1,6 +1,7 @@
-.vscode
-static
-dist-newstyle
+.vscode/
+bin/
+dist-newstyle/
+fsutils/
+build.sh
 cabal.project.local
 ROADMAP.md
-fsutils
