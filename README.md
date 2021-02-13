@@ -7,19 +7,12 @@ readonly REST API.
   implemented yet, like user-friendly (error) messages, better CLI and probably
   others.
 
-## Table of Contents
-
 - [Overview](#overview)
 - [Installation](#installation)
 - [Creating a Blog](#creating-a-blog)
-  - [Directory Structure](#directory-structure)
-  - [Posts](#posts)
-  - [Templates](#templates)
-    - [Data Passed to Templates](#data-passed-to-templates)
 - [Generating HTML Files](#generating-html-files)
 - [Serving the Files](#serving-the-files)
 - [REST API](#rest-api)
-  - [Endpoints](#endpoints)
 
 ## Overview
 
@@ -150,6 +143,18 @@ directory.
 
 > Draft posts are ignored when generating the files.
 
+### The `build` Command Reference
+
+```
+$ bl build -h
+Usage: bl build [-d|--dir STRING]
+
+Available options:
+  -h,--help                Show this help text
+  -d,--dir STRING          Path to the directory with posts and templates
+                           (default: .)
+```
+
 ## Serving the Files
 
 `bl` includes a built-in file server. To start the server, `cd` to the blog's
@@ -168,6 +173,20 @@ the generated blog.
 >  ```
 >  $ bl fileserver -r
 >  ```
+
+### The `fileserver` Command Reference
+
+```
+$ bl fileserver -h
+Usage: bl fileserver [-d|--dir STRING] [-p|--port INT] [-r|--rebuild]
+
+Available options:
+  -h,--help                Show this help text
+  -d,--dir STRING          Path to the directory with posts and templates
+                           (default: .)
+  -p,--port INT            Port to listen on (default: 2703)
+  -r,--rebuild             Rebuild before serving (default: False)
+```
 
 ## REST API
 
@@ -197,3 +216,16 @@ Now `curl http://localhost:2703/posts/0` to fetch the newest post.
 
 > To see the API in action, you can use my blog's API server running at
   `https://mirovarga.com/api`.
+
+### The `apiserver` Command Reference
+
+```
+$ bl apiserver -h
+Usage: bl apiserver [-d|--dir STRING] [-p|--port INT]
+
+Available options:
+  -h,--help                Show this help text
+  -d,--dir STRING          Path to the directory with posts and templates
+                           (default: .)
+  -p,--port INT            Port to listen on (default: 2703)
+```
