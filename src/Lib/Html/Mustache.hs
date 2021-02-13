@@ -48,6 +48,7 @@ instance ToJSON HtmlPost where
             (map T.toLower (tags' p)),
         "draft" .= draft,
         "key" .= key,
+        "standalone" .= standalone,
         "content" .= HtmlContent content
       ]
 

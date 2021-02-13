@@ -17,6 +17,7 @@ data Post = Post
     tags :: Maybe [T.Text],
     draft :: Maybe Bool,
     key :: T.Text,
+    standalone :: Maybe Bool,
     content :: Content
   }
   deriving (Show)
@@ -38,6 +39,7 @@ instance ToJSON Post where
         "tags" .= fromMaybe [] tags,
         "draft" .= (Just True == draft),
         "key" .= key,
+        "standalone" .= (Just True == standalone),
         "content" .= content
       ]
 
@@ -70,3 +72,12 @@ withTag t = filter (\p -> t `elem` tags' p)
 
 tags' :: Post -> [T.Text]
 tags' = fromMaybe [] . tags
+
+standalones :: [Post] -> [Post]
+standalones = filter standalone'
+
+notStandalones :: [Post] -> [Post]
+notStandalones = filter (not . standalone')
+
+standalone' :: Post -> Bool
+standalone' = fromMaybe False . standalone

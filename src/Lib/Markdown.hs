@@ -37,7 +37,8 @@ data Metadata = Metadata
     created :: Maybe UTCTime,
     tags :: Maybe [Text],
     draft :: Maybe Bool,
-    key :: Maybe Text
+    key :: Maybe Text,
+    standalone :: Maybe Bool
   }
   deriving (Show, FromJSON, Generic)
 
@@ -53,7 +54,7 @@ parseYamlMd yamlMd = case parse "yamlMd" yamlMd of
 
 mdToPost' :: (Maybe Metadata, Maybe Content) -> Maybe Post
 mdToPost' (Just Metadata {..}, Just content) =
-  Just $ Post title description created tags draft key' content
+  Just $ Post title description created tags draft key' standalone content
   where
     key' = fromMaybe (slug title) key
 mdToPost' (Nothing, _) = Nothing

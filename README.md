@@ -63,6 +63,7 @@ created:      # YYYY-MM-DDTHH:MM:SSZ, e.g. 2021-02-10T00:00:00Z
 tags:         # [], e.g. [bl, Haskell], optional
 draft:        # yes | no, optional, default 'no'
 key:          # optional, default slugified title
+standalone:   # yes | no, optional, default 'no'
 ---
 ```
 
@@ -98,6 +99,7 @@ The primary data is the post object:
   ],
   "draft": "",
   "key": "",
+  "standalone": "",
   "content": ""           // the post's Markdown rendered to HTML   
 }
 ```
@@ -141,7 +143,12 @@ The files are generated to the `static` directory. Also, all accompanying files
 (and directories) from the `templates` directory are copied to the `static`
 directory.
 
-> Draft posts are ignored when generating the files.
+> Draft posts (with `draft: yes` in their front matter) are ignored when
+  generating the files.
+
+> Standalone posts (with `standalone: yes` in their front matter) aren't
+  automatically added to the index and tag pages but have to be linked to
+  manually in templates. 
 
 ### The `build` Command Reference
 
@@ -207,12 +214,24 @@ Now `curl http://localhost:2703/posts/0` to fetch the newest post.
 
 ### Endpoints
 
-- `/posts` fetches all posts
-- `/posts?tag={tag}` fetches posts tagged with `tag`
-- `/posts/{index}` fetches the post with the (zero-based) `index`
-- `/posts/{key}` fetches the post with the `key`
+#### `/posts`
 
-> Multiple posts are sorted from newest to oldest, draft posts are excluded.
+`GET /posts` returns all non-draft posts. You can filter them with the following
+query parameters:  
+
+- `tag` to return only posts with the `tag`
+- `also-standalones` to include also standalone posts
+- `only-standalones` to return only standalone posts
+
+#### `/posts/{index}`
+
+`GET /posts/{index}` returns the post with the (zero-based) `index`.
+
+#### `/posts/{key}`
+
+`GET /posts/{key}` returns the post with the `key`.
+
+> Multiple posts are sorted from newest to oldest.
 
 > To see the API in action, you can use my blog's API server running at
   `https://mirovarga.com/api`.

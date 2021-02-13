@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
 module Lib.Server.API (run) where
@@ -13,20 +14,27 @@ import Servant hiding (Post)
 import System.FilePath
 
 type PostsAPI =
-  "posts" :> QueryParam "tag" Text :> Get '[JSON] [Post]
-    :<|> "posts" :> Capture "index" Int :> Get '[JSON] Post
-    :<|> "posts" :> Capture "key" Text :> Get '[JSON] Post
+  "posts"
+    :> ( QueryParam "tag" Text :> QueryFlag "also-standalones" :> QueryFlag "only-standalones" :> Get '[JSON] [Post]
+           :<|> Capture "index" Int :> Get '[JSON] Post
+           :<|> Capture "key" Text :> Get '[JSON] Post
+       )
 
 server :: FilePath -> Server PostsAPI
 server dir = posts :<|> postWithIndex :<|> postWithKey
   where
-    posts :: Maybe Text -> Handler [Post]
-    posts Nothing = liftIO posts'
-    posts (Just t) = liftIO $ posts' >>= (return . withTag t)
+    posts :: Maybe Text -> Bool -> Bool -> Handler [Post]
+    posts Nothing False False = liftIO $ notStandalones <$> posts'
+    posts Nothing True False = liftIO posts'
+    posts Nothing False True = liftIO $ standalones <$> posts'
+    posts Nothing True True =
+      throwError
+        err400 {errBody = "Use either 'also-standalones' or 'only-standalones'."}
+    posts (Just t) _ _ = liftIO $ withTag t <$> posts'
 
     postWithIndex :: Int -> Handler Post
     postWithIndex i = do
-      post <- liftIO $ posts' >>= (return . lookup' i)
+      post <- liftIO $ lookup' i <$> posts'
       case post of
         Nothing -> throwError err404
         (Just p) -> return p
@@ -38,7 +46,7 @@ server dir = posts :<|> postWithIndex :<|> postWithKey
 
     postWithKey :: Text -> Handler Post
     postWithKey s = do
-      post <- liftIO $ posts' >>= (return . withSlug s)
+      post <- liftIO $ withSlug s <$> posts'
       case post of
         Nothing -> throwError err404
         Just p -> return p
