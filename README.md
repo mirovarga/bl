@@ -23,7 +23,7 @@ readonly REST API.
 
 ## Overview
 
-`bl` (short for *bl*og) just needs posts written in
+`bl` (short for **bl**og) just needs posts written in
 [Markdown](https://www.markdownguide.org/) and a set of
 [Mustache](https://mustache.github.io/) templates to generate the posts to HTML
 files.
@@ -54,7 +54,7 @@ templates/          # the templates and accompanying files (styles, scripts, ima
 static/             # the generated HTML files (plus copied accompanying files)
 ```
 
-> For examples, see
+> For an example, see
   [my blog](https://github.com/mirovarga/mirovarga.com).
 
 ### Posts
