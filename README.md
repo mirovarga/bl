@@ -163,11 +163,11 @@ Now open [http://localhost:2703](http://localhost:2703) in your browser to see
 the generated blog.
 
 > You don't need to run the `build` command before starting the file server as
-  it can re/generate HTML files before serving them. Just use the `-r` switch:
-
-  ```bash
-  $ bl fileserver -r
-  ```
+> it can re/generate HTML files before serving them. Just use the `-r` switch:
+>  
+>  ```
+>  $ bl fileserver -r
+>  ```
 
 ## REST API
 
