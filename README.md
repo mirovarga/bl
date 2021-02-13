@@ -3,11 +3,14 @@
 A single binary, easy to use static blog generator with a file server and
 readonly REST API.
 
-> It's a rewrite of [LitePub](https://github.com/mirovarga/litepub) in Haskell.
+> It's my first real project in Haskell and there are still things I haven't
+  implemented yet, like user-friendly (error) messages, better CLI and probably
+  others.
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Installation](#installation)
 - [Creating a Blog](#creating-a-blog)
   - [Directory Structure](#directory-structure)
   - [Posts](#posts)
@@ -27,6 +30,14 @@ files.
 
 It can then serve the files with a built-in file server or expose the posts via
 a readonly REST API.
+
+## Installation
+
+Just [download a binary](https://github.com/mirovarga/bl/releases) and unzip it
+to a directory of your choice.
+
+> Ideally the directory should be on `PATH` so you can just type `bl` instead of
+  `./bl`.
 
 ## Creating a Blog
 
@@ -137,6 +148,8 @@ The files are generated to the `static` directory. Also, all accompanying files
 (and directories) from the `templates` directory are copied to the `static`
 directory.
 
+> Draft posts are ignored when generating the files.
+
 ## Serving the Files
 
 `bl` includes a built-in file server. To start the server, `cd` to the blog's
@@ -148,6 +161,13 @@ $ bl fileserver
 
 Now open [http://localhost:2703](http://localhost:2703) in your browser to see
 the generated blog.
+
+> You don't need to run the `build` command before starting the file server as
+  it can re/generate HTML files before serving them. Just use the `-r` switch:
+
+  ```bash
+  $ bl fileserver -r
+  ```
 
 ## REST API
 
@@ -163,6 +183,9 @@ $ bl apiserver
 
 Now `curl http://localhost:2703/posts/0` to fetch the newest post.
 
+> You don't need to run the `build` command before starting the API server as it
+  uses directly Markdown files from the `posts` directory.
+
 ### Endpoints
 
 - `/posts` fetches all posts
@@ -170,4 +193,7 @@ Now `curl http://localhost:2703/posts/0` to fetch the newest post.
 - `/posts/{index}` fetches the post with the (zero-based) `index`
 - `/posts/{key}` fetches the post with the `key`
 
-> Multiple posts are sorted from newest to oldest.
+> Multiple posts are sorted from newest to oldest, draft posts are excluded.
+
+> To see the API in action, you can use my blog's API server running at
+  `https://mirovarga.com/api`.
