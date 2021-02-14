@@ -1,6 +1,9 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE ViewPatterns #-}
 
 module Lib.Server.API (run) where
 
@@ -14,23 +17,42 @@ import Servant hiding (Post)
 import System.FilePath
 
 type PostsAPI =
+  -- /posts?tag=&standalone=
   "posts"
-    :> ( QueryParam "tag" Text :> QueryFlag "also-standalones" :> QueryFlag "only-standalones" :> Get '[JSON] [Post]
-           :<|> Capture "index" Int :> Get '[JSON] Post
-           :<|> Capture "key" Text :> Get '[JSON] Post
-       )
+    :> QueryParam "tag" Text
+    :> QueryParam "standalone" (Filter 'Standalone)
+    :> Get '[JSON] [Post]
+    -- /posts/{index}
+    :<|> "posts"
+    :> Capture "index" Int
+    :> Get '[JSON] Post
+    -- /posts/{key}
+    :<|> "posts"
+    :> Capture "key" Text
+    :> Get '[JSON] Post
+
+data FilterParam = Standalone
+
+data Filter (p :: FilterParam) = Yes | No | Both
+
+instance FromHttpApiData (Filter p) where
+  parseQueryParam (toLower -> "yes") = Right Yes
+  parseQueryParam (toLower -> "no") = Right No
+  parseQueryParam (toLower -> "both") = Right Both
+  parseQueryParam value = Left $ "Unknown parameter value: " <> value
 
 server :: FilePath -> Server PostsAPI
 server dir = posts :<|> postWithIndex :<|> postWithKey
   where
-    posts :: Maybe Text -> Bool -> Bool -> Handler [Post]
-    posts Nothing False False = liftIO $ notStandalones <$> posts'
-    posts Nothing True False = liftIO posts'
-    posts Nothing False True = liftIO $ standalones <$> posts'
-    posts Nothing True True =
-      throwError
-        err400 {errBody = "Use either 'also-standalones' or 'only-standalones'."}
-    posts (Just t) _ _ = liftIO $ withTag t <$> posts'
+    posts ::
+      Maybe Text ->
+      Maybe (Filter 'Standalone) ->
+      Handler [Post]
+    posts Nothing Nothing = liftIO posts'
+    posts Nothing (Just No) = liftIO $ notStandalones <$> posts'
+    posts Nothing (Just Yes) = liftIO $ standalones <$> posts'
+    posts Nothing (Just Both) = liftIO posts'
+    posts (Just t) _ = liftIO $ withTag t <$> posts'
 
     postWithIndex :: Int -> Handler Post
     postWithIndex i = do

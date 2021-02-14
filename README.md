@@ -219,9 +219,9 @@ Now `curl http://localhost:2703/posts/0` to fetch the newest post.
 `GET /posts` returns all non-draft posts. You can filter them with the following
 query parameters:  
 
-- `tag` to return only posts with the `tag`
-- `also-standalones` to include also standalone posts
-- `only-standalones` to return only standalone posts
+- `tag=<tag>` to return only posts with the `<tag>`
+- `standalone=<yes|no|both>` to return only standalone, only non-standalone or
+  both standalone and non-standalone posts respectively
 
 #### `/posts/{index}`
 
