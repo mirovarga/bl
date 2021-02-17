@@ -4,43 +4,41 @@
 # - preserve exec flag on bl
 
 name: Haskell CI
-
 on:
   push:
     # tags:
     # - "*"
-
 jobs:
   build:
-    name: Build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-
+    env:
+      CONFIG: --install-method=copy --overwrite-policy=always --installdir=.
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-haskell@v1
+
+      - uses: actions/setup-haskell@v1.1.2
+        id: setup-haskell-cabals
         with:
           ghc-version: "8.10.3"
           cabal-version: "3.2"
 
-      - name: Cache ~/.cabal/packages, ~/.cabal/store
-        uses: actions/cache@v2
+      - run: cabal update
+      - run: cabal freeze $CONFIG
+      - uses: actions/cache@v2
         with:
           path: |
-            ~/.cabal/packages
-            ~/.cabal/store
-          key: ${{ runner.os }}-8.10.3
+            ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+            dist-newstyle
+          key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.ghc }}-
 
-      - name: Install dependencies
-        run: cabal build --only-dependencies --enable-tests --enable-benchmarks
+      - run: cabal install $CONFIG
 
-      - name: Build binary
-        run: cabal install --install-method=copy --overwrite-policy=always --installdir=.
-
-      - name: Create release
-        uses: ncipollo/release-action@v1
+      - uses: ncipollo/release-action@v1
         with:
           draft: true
           artifacts: "bl,bl.exe"
