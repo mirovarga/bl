@@ -46,3 +46,4 @@ jobs:
           artifacts: "bl,bl.exe"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ci-cd-test
+          allowUpdates: true
