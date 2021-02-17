@@ -82,6 +82,7 @@ jobs:
         with:
           artifacts: "bl"
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ci-cd-test
       # - name: Load Release URL File from release job
       #   uses: actions/download-artifact@v1
       #   with:
