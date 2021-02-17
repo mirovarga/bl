@@ -14,8 +14,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-    env:
-      CONFIG: --install-method=copy --overwrite-policy=always --installdir=.
     steps:
       - uses: actions/checkout@v2
 
@@ -26,7 +24,7 @@ jobs:
           cabal-version: "3.2"
 
       - run: cabal update
-      - run: cabal freeze $CONFIG
+      - run: cabal freeze
       - uses: actions/cache@v2
         with:
           path: |
@@ -36,7 +34,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ matrix.ghc }}-
 
-      - run: cabal install $CONFIG
+      - run: cabal install --install-method=copy --overwrite-policy=always --installdir=.
 
       - uses: ncipollo/release-action@v1
         with:
