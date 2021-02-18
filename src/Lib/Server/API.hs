@@ -34,12 +34,11 @@ type PostsAPI =
 
 data FilterParam = Standalone | Draft
 
-data Filter (p :: FilterParam) = Yes | No | Both
+data Filter (p :: FilterParam) = Yes | No
 
 instance FromHttpApiData (Filter p) where
   parseQueryParam (toLower -> "yes") = Right Yes
   parseQueryParam (toLower -> "no") = Right No
-  parseQueryParam (toLower -> "both") = Right Both
   parseQueryParam value = Left $ "Unknown parameter value: " <> value
 
 server :: FilePath -> Server PostsAPI
@@ -56,7 +55,6 @@ server dir = posts :<|> postWithIndex :<|> postWithKey
     filterBy _ Nothing = id
     filterBy f (Just Yes) = filter f
     filterBy f (Just No) = filter (not . f)
-    filterBy _ (Just Both) = id
 
     postWithIndex :: Int -> Handler Post
     postWithIndex i = do

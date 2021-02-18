@@ -13,7 +13,7 @@ import qualified Lib.Server.File as File
 import Options.Generic
 
 main :: IO ()
-main = runCommand =<< unwrapRecord "bl 0.1.0 [github.com/mirovarga/bl]"
+main = runCommand =<< unwrapRecord "bl 0.3.0 [github.com/mirovarga/bl]"
 
 runCommand :: Command Unwrapped -> IO ()
 runCommand (Build dir) = SSG.generateHtml dir
