@@ -17,10 +17,11 @@ import Servant hiding (Post)
 import System.FilePath
 
 type PostsAPI =
-  -- /posts?tag=&standalone=
+  -- /posts?tag=&standalone=&draft=
   "posts"
     :> QueryParam "tag" Text
     :> QueryParam "standalone" (Filter 'Standalone)
+    :> QueryParam "draft" (Filter 'Draft)
     :> Get '[JSON] [Post]
     -- /posts/{index}
     :<|> "posts"
@@ -31,7 +32,7 @@ type PostsAPI =
     :> Capture "key" Text
     :> Get '[JSON] Post
 
-data FilterParam = Standalone
+data FilterParam = Standalone | Draft
 
 data Filter (p :: FilterParam) = Yes | No | Both
 
@@ -47,12 +48,15 @@ server dir = posts :<|> postWithIndex :<|> postWithKey
     posts ::
       Maybe Text ->
       Maybe (Filter 'Standalone) ->
+      Maybe (Filter 'Draft) ->
       Handler [Post]
-    posts Nothing Nothing = liftIO posts'
-    posts Nothing (Just No) = liftIO $ notStandalones <$> posts'
-    posts Nothing (Just Yes) = liftIO $ standalones <$> posts'
-    posts Nothing (Just Both) = liftIO posts'
-    posts (Just t) _ = liftIO $ withTag t <$> posts'
+    posts Nothing s d = liftIO $ filterBy standalone' s . filterBy draft' d <$> posts'
+    posts (Just t) s d = liftIO $ withTag t . filterBy standalone' s . filterBy draft' d <$> posts'
+
+    filterBy _ Nothing = id
+    filterBy f (Just Yes) = filter f
+    filterBy f (Just No) = filter (not . f)
+    filterBy _ (Just Both) = id
 
     postWithIndex :: Int -> Handler Post
     postWithIndex i = do
@@ -76,7 +80,6 @@ server dir = posts :<|> postWithIndex :<|> postWithKey
     posts' :: IO [Post]
     posts' =
       newestFirst
-        . filter (not . fromMaybe False . draft)
         . catMaybes
         <$> mdDirToPosts (joinPath [dir, "posts"])
 

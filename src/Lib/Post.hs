@@ -81,3 +81,12 @@ notStandalones = filter (not . standalone')
 
 standalone' :: Post -> Bool
 standalone' = fromMaybe False . standalone
+
+drafts :: [Post] -> [Post]
+drafts = filter draft'
+
+notDrafts :: [Post] -> [Post]
+notDrafts = filter (not . draft')
+
+draft' :: Post -> Bool
+draft' = fromMaybe False . draft

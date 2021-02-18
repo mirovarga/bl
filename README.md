@@ -216,12 +216,14 @@ Now `curl http://localhost:2703/posts/0` to fetch the newest post.
 
 #### `/posts`
 
-`GET /posts` returns all non-draft posts. You can filter them with the following
-query parameters:  
+`GET /posts` returns all posts. You can filter them with the following query
+parameters:
 
 - `tag=<tag>` to return only posts with the `<tag>`
 - `standalone=<yes|no|both>` to return only standalone, only non-standalone or
   both standalone and non-standalone posts respectively
+- `draft=<yes|no|both>` to return only draft, only non-draft or
+  both draft and non-draft posts respectively
 
 #### `/posts/{index}`
 
