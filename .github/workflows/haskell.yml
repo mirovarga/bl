@@ -47,7 +47,8 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.tag.outputs.tag }}
+          #tag: ${{ steps.tag.outputs.tag }}
+          tag: ci-cd-test
           artifacts: "*.zip"
           draft: true
           token: ${{ secrets.GITHUB_TOKEN }}
