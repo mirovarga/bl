@@ -1,6 +1,3 @@
-# - create windows binary
-# - zip binaries
-# - add LICENSE and README.md to zips
 # - preserve exec flag on bl
 
 name: Haskell CI
@@ -16,6 +13,12 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
+
+      - uses: olegtarasov/get-tag@v2
+        id: tag
+        with:
+          tagRegex: "(.*)"
+          tagRegexGroup: 1
 
       - uses: actions/setup-haskell@v1
         id: setup-haskell-cabal
@@ -37,10 +40,10 @@ jobs:
       - run: cabal install --install-method=copy --overwrite-policy=always --installdir=.
 
       - if: matrix.os == 'ubuntu-latest'
-        run: zip -9q bl-x86_64-linux.zip bl $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE.md
+        run: zip -9jq bl-${{ steps.tag.outputs.tag }}-x86_64-linux.zip bl $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE
 
       - if: matrix.os == 'windows-latest'
-        run: zip -9q bl-x86_64-windows.zip bl.exe $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE.md
+        run: zip -9jq bl-${{ steps.tag.outputs.tag }}-x86_64-windows.zip bl.exe $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE
 
       - uses: ncipollo/release-action@v1
         with:
