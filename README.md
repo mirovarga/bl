@@ -1,5 +1,7 @@
 # bl
 
+[![Release](https://github.com/mirovarga/bl/actions/workflows/release.yml/badge.svg)](https://github.com/mirovarga/bl/actions/workflows/release.yml)
+
 A single binary, easy to use static blog generator with a file server and
 readonly REST API.
 
