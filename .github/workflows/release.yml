@@ -1,10 +1,8 @@
-# - preserve exec flag on bl
-
-name: Haskell CI
+name: Release
 on:
   push:
-    # tags:
-    # - "*"
+    tags:
+      - "*"
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -47,9 +45,7 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          #tag: ${{ steps.tag.outputs.tag }}
-          tag: ci-cd-test
+          tag: ${{ steps.tag.outputs.tag }}
           artifacts: "*.zip"
-          draft: true
-          token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
