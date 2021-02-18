@@ -36,10 +36,16 @@ jobs:
 
       - run: cabal install --install-method=copy --overwrite-policy=always --installdir=.
 
+      - if: matrix.os == 'ubuntu-latest'
+        run: zip -9q bl-x86_64-linux.zip bl $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE.md
+
+      - if: matrix.os == 'windows-latest'
+        run: zip -9q bl-x86_64-windows.zip bl.exe $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE.md
+
       - uses: ncipollo/release-action@v1
         with:
           draft: true
-          artifacts: "bl,bl.exe"
+          artifacts: "*.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ci-cd-test
           allowUpdates: true
