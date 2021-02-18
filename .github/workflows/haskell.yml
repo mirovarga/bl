@@ -40,15 +40,15 @@ jobs:
       - run: cabal install --install-method=copy --overwrite-policy=always --installdir=.
 
       - if: matrix.os == 'ubuntu-latest'
-        run: zip -9jq bl-${{ steps.tag.outputs.tag }}-x86_64-linux.zip bl $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE
+        run: 7z a bl-${{ steps.tag.outputs.tag }}-x86_64-linux.zip bl $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE
 
       - if: matrix.os == 'windows-latest'
-        run: zip -9jq bl-${{ steps.tag.outputs.tag }}-x86_64-windows.zip bl.exe $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE
+        run: 7z a bl-${{ steps.tag.outputs.tag }}-x86_64-windows.zip bl.exe $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/LICENSE
 
       - uses: ncipollo/release-action@v1
         with:
-          draft: true
+          tag: ${{ steps.tag.outputs.tag }}
           artifacts: "*.zip"
+          draft: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ci-cd-test
           allowUpdates: true
