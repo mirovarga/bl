@@ -1,5 +1,4 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
@@ -8,7 +7,9 @@
 module Lib.Server.API (run) where
 
 import Control.Monad.IO.Class
+import Data.List
 import Data.Maybe
+import Data.Ord
 import Data.Text hiding (filter, length)
 import Lib.Markdown
 import Lib.Post
@@ -17,11 +18,12 @@ import Servant hiding (Post)
 import System.FilePath
 
 type PostsAPI =
-  -- /posts?tag=&standalone=&draft=
+  -- /posts?tag=&standalone=&draft=&sort=
   "posts"
     :> QueryParam "tag" Text
     :> QueryParam "standalone" (Filter 'Standalone)
     :> QueryParam "draft" (Filter 'Draft)
+    :> QueryParam "sort" Sort
     :> Get '[JSON] [Post]
     -- /posts/{index}
     :<|> "posts"
@@ -41,6 +43,22 @@ instance FromHttpApiData (Filter p) where
   parseQueryParam (toLower -> "no") = Right No
   parseQueryParam value = Left $ "Unknown parameter value: " <> value
 
+data SortDirection = Asc | Desc
+
+data Sort
+  = Title SortDirection
+  | Created SortDirection
+  | Key SortDirection
+
+instance FromHttpApiData Sort where
+  parseQueryParam (toLower -> "title") = Right $ Title Asc
+  parseQueryParam (toLower -> "-title") = Right $ Title Desc
+  parseQueryParam (toLower -> "created") = Right $ Created Asc
+  parseQueryParam (toLower -> "-created") = Right $ Created Desc
+  parseQueryParam (toLower -> "key") = Right $ Key Asc
+  parseQueryParam (toLower -> "-key") = Right $ Key Desc
+  parseQueryParam value = Left $ "Unknown parameter value: " <> value
+
 server :: FilePath -> Server PostsAPI
 server dir = posts :<|> postWithIndex :<|> postWithKey
   where
@@ -48,13 +66,22 @@ server dir = posts :<|> postWithIndex :<|> postWithKey
       Maybe Text ->
       Maybe (Filter 'Standalone) ->
       Maybe (Filter 'Draft) ->
+      Maybe Sort ->
       Handler [Post]
-    posts Nothing s d = liftIO $ filterBy standalone' s . filterBy draft' d <$> posts'
-    posts (Just t) s d = liftIO $ withTag t . filterBy standalone' s . filterBy draft' d <$> posts'
+    posts Nothing s d s' = liftIO $ sortBy' s' . filterBy standalone' s . filterBy draft' d <$> posts'
+    posts (Just t) s d s' = liftIO $ sortBy' s' . withTag t . filterBy standalone' s . filterBy draft' d <$> posts'
 
     filterBy _ Nothing = id
     filterBy f (Just Yes) = filter f
     filterBy f (Just No) = filter (not . f)
+
+    sortBy' Nothing = id
+    sortBy' (Just (Title Asc)) = sortOn title
+    sortBy' (Just (Title Desc)) = sortOn (Down . title)
+    sortBy' (Just (Created Asc)) = sortOn created
+    sortBy' (Just (Created Desc)) = sortOn (Down . created)
+    sortBy' (Just (Key Asc)) = sortOn key
+    sortBy' (Just (Key Desc)) = sortOn (Down . key)
 
     postWithIndex :: Int -> Handler Post
     postWithIndex i = do
@@ -76,10 +103,7 @@ server dir = posts :<|> postWithIndex :<|> postWithKey
         Just p -> return p
 
     posts' :: IO [Post]
-    posts' =
-      newestFirst
-        . catMaybes
-        <$> mdDirToPosts (joinPath [dir, "posts"])
+    posts' = catMaybes <$> mdDirToPosts (joinPath [dir, "posts"])
 
 run :: FilePath -> Int -> IO ()
 run dir port = W.run port serverApp

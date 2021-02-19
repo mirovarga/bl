@@ -218,13 +218,23 @@ Now `curl http://localhost:2703/posts/0` to fetch the newest post.
 
 #### `/posts`
 
-`GET /posts` returns all posts ordered from newest to oldest. You can filter
-them with the following query parameters:
+`GET /posts` returns all posts (in no particular order).
+
+You can filter the posts with the following query parameters:
 
 - `tag=<tag>` to return only posts with the `<tag>`
 - `standalone=<yes|no>` to return only standalone or only non-standalone posts
    respectively
 - `draft=<yes|no>` to return only draft or only non-draft posts respectively
+
+You can also sort the posts using the `sort` query parameter with the following
+values:
+
+- `title` to sort the posts by their titles
+- `created` to sort the posts by their created dates
+- `key` to sort the posts by their keys
+
+> To sort in descending order, prefix the value with `-`, e.g `sort=-title`. 
 
 #### `/posts/{index}`
 
@@ -233,8 +243,6 @@ them with the following query parameters:
 #### `/posts/{key}`
 
 `GET /posts/{key}` returns the post with the `key`.
-
-> Multiple posts are sorted from newest to oldest.
 
 > To see the API in action, you can use my blog's API server running at
   `https://mirovarga.com/api`.
