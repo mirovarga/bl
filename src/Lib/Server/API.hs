@@ -25,10 +25,6 @@ type PostsAPI =
     :> QueryParam "draft" (Filter 'Draft)
     :> QueryParam "sort" Sort
     :> Get '[JSON] [Post]
-    -- /posts/{index}
-    :<|> "posts"
-    :> Capture "index" Int
-    :> Get '[JSON] Post
     -- /posts/{key}
     :<|> "posts"
     :> Capture "key" Text
@@ -60,7 +56,7 @@ instance FromHttpApiData Sort where
   parseQueryParam value = Left $ "Unknown parameter value: " <> value
 
 server :: FilePath -> Server PostsAPI
-server dir = posts :<|> postWithIndex :<|> postWithKey
+server dir = posts :<|> postWithKey
   where
     posts ::
       Maybe Text ->
@@ -82,18 +78,6 @@ server dir = posts :<|> postWithIndex :<|> postWithKey
     sortBy' (Just (Created Desc)) = sortOn (Down . created)
     sortBy' (Just (Key Asc)) = sortOn key
     sortBy' (Just (Key Desc)) = sortOn (Down . key)
-
-    postWithIndex :: Int -> Handler Post
-    postWithIndex i = do
-      post <- liftIO $ lookup' i <$> posts'
-      case post of
-        Nothing -> throwError err404
-        (Just p) -> return p
-      where
-        lookup' :: Int -> [Post] -> Maybe Post
-        lookup' index posts
-          | index >= 0 && index < length posts = Just (posts !! index)
-          | otherwise = Nothing
 
     postWithKey :: Text -> Handler Post
     postWithKey s = do

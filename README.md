@@ -2,6 +2,8 @@
 
 [![Release](https://github.com/mirovarga/bl/actions/workflows/release.yml/badge.svg)](https://github.com/mirovarga/bl/actions/workflows/release.yml)
 
+**NB: The project is a work in progress and breaking changes can occur.**
+
 A single binary, easy to use static blog generator with a file server and
 readonly REST API.
 
@@ -235,10 +237,6 @@ values:
 - `key` to sort the posts by their keys
 
 > To sort in descending order, prefix the value with `-`, e.g `sort=-title`. 
-
-#### `/posts/{index}`
-
-`GET /posts/{index}` returns the post with the (zero-based) `index`.
 
 #### `/posts/{key}`
 
