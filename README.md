@@ -211,7 +211,7 @@ command:
 $ bl apiserver
 ```
 
-Now `curl http://localhost:2703/posts/0` to fetch the newest post.
+Now `curl http://localhost:2703/posts` to fetch all posts.
 
 > You don't need to run the `build` command before starting the API server as it
   uses directly Markdown files from the `posts` directory.
