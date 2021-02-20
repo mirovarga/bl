@@ -18,9 +18,9 @@ import Servant hiding (Post)
 import System.FilePath
 
 type PostsAPI =
-  -- /posts?tag=&standalone=&draft=&sort=
+  -- /posts?tags=&standalone=&draft=&sort=
   "posts"
-    :> QueryParam "tag" Text
+    :> QueryParam "tags" Text
     :> QueryParam "standalone" (Filter 'Standalone)
     :> QueryParam "draft" (Filter 'Draft)
     :> QueryParam "sort" Sort
@@ -64,8 +64,19 @@ server dir = posts :<|> postWithKey
       Maybe (Filter 'Draft) ->
       Maybe Sort ->
       Handler [Post]
-    posts Nothing s d s' = liftIO $ sortBy' s' . filterBy standalone' s . filterBy draft' d <$> posts'
-    posts (Just t) s d s' = liftIO $ sortBy' s' . withTag t . filterBy standalone' s . filterBy draft' d <$> posts'
+    posts Nothing s d s' =
+      liftIO $
+        sortBy' s'
+          . filterBy standalone' s
+          . filterBy draft' d
+          <$> posts'
+    posts (Just ts) s d s' =
+      liftIO $
+        sortBy' s'
+          . withTags (splitOn "," ts)
+          . filterBy standalone' s
+          . filterBy draft' d
+          <$> posts'
 
     filterBy _ Nothing = id
     filterBy f (Just Yes) = filter f

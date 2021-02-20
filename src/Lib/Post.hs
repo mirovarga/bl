@@ -70,6 +70,11 @@ allTags (p : ps) = nub $ tags' p ++ allTags ps
 withTag :: T.Text -> [Post] -> [Post]
 withTag t = filter (\p -> t `elem` tags' p)
 
+withTags :: [T.Text] -> [Post] -> [Post]
+withTags [] _ = []
+withTags _ [] = []
+withTags (t : ts) ps = nub $ withTag t ps <> withTags ts ps
+
 tags' :: Post -> [T.Text]
 tags' = fromMaybe [] . tags
 

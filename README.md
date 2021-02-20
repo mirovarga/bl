@@ -224,7 +224,7 @@ Now `curl http://localhost:2703/posts/0` to fetch the newest post.
 
 You can filter the posts with the following query parameters:
 
-- `tag=<tag>` to return only posts with the `<tag>`
+- `tags=<comma_separated_tags>` to return only posts with the specified tags
 - `standalone=<yes|no>` to return only standalone or only non-standalone posts
    respectively
 - `draft=<yes|no>` to return only draft or only non-draft posts respectively
