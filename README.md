@@ -4,8 +4,7 @@
 
 **NB: The project is a work in progress and breaking changes can occur.**
 
-A single binary, easy to use static blog generator with a file server and
-readonly REST API.
+A single binary, easy to use static blog generator with a readonly REST API.
 
 > It's my first real project in Haskell and there are still things I haven't
   implemented yet, like user-friendly (error) messages, better CLI and probably
@@ -15,7 +14,6 @@ readonly REST API.
 - [Installation](#installation)
 - [Creating a Blog](#creating-a-blog)
 - [Generating HTML Files](#generating-html-files)
-- [Serving the Files](#serving-the-files)
 - [REST API](#rest-api)
 
 ## Overview
@@ -24,9 +22,6 @@ readonly REST API.
 [Markdown](https://www.markdownguide.org/) and a set of
 [Mustache](https://mustache.github.io/) templates to generate the posts to HTML
 files.
-
-It can then serve the files with a built-in file server or expose the posts via
-a readonly REST API.
 
 ## Installation
 
@@ -166,49 +161,16 @@ Available options:
                            (default: .)
 ```
 
-## Serving the Files
-
-`bl` includes a built-in file server. To start the server, `cd` to the blog's
-directory and use the `fileserver` command:
-
-```
-$ bl fileserver
-```
-
-Now open [http://localhost:2703](http://localhost:2703) in your browser to see
-the generated blog.
-
-> You don't need to run the `build` command before starting the file server as
-> it can re/generate HTML files before serving them. Just use the `-r` switch:
->  
->  ```
->  $ bl fileserver -r
->  ```
-
-### The `fileserver` Command Reference
-
-```
-$ bl fileserver -h
-Usage: bl fileserver [-d|--dir STRING] [-p|--port INT] [-r|--rebuild]
-
-Available options:
-  -h,--help                Show this help text
-  -d,--dir STRING          Path to the directory with posts and templates
-                           (default: .)
-  -p,--port INT            Port to listen on (default: 2703)
-  -r,--rebuild             Rebuild before serving (default: False)
-```
-
 ## REST API
 
-In addition to generating HTML files and serving them, `bl` also provides a 
-readonly REST API to access the posts.
+In addition to generating HTML files, `bl` also provides a readonly REST API to
+access the posts.
 
-To start the API server, `cd` to the blog's directory and use the `apiserver`
+To start the API server, `cd` to the blog's directory and use the `restapi`
 command:
 
 ```
-$ bl apiserver
+$ bl restapi
 ```
 
 Now `curl http://localhost:2703/posts` to fetch all posts.
@@ -245,11 +207,11 @@ values:
 > To see the API in action, you can use my blog's API server running at
   `https://mirovarga.com/api`.
 
-### The `apiserver` Command Reference
+### The `restapi` Command Reference
 
 ```
-$ bl apiserver -h
-Usage: bl apiserver [-d|--dir STRING] [-p|--port INT]
+$ bl restapi -h
+Usage: bl restapi [-d|--dir STRING] [-p|--port INT]
 
 Available options:
   -h,--help                Show this help text

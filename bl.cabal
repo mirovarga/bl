@@ -25,7 +25,6 @@ executable bl
     Lib.Markdown
     Lib.Post
     Lib.Server.API
-    Lib.Server.File
     Lib.SSG
 
   -- other-extensions:
