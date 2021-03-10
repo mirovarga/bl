@@ -15,7 +15,7 @@ maintainer:         hello@mirovarga.com
 -- copyright:
 -- category:
 build-type:         Simple
-extra-source-files: README.md
+extra-source-files: README.md, LICENSE
 
 executable bl
   hs-source-dirs:   src
