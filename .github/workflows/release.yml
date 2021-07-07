@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-haskell@v1
         id: setup-haskell-cabal
         with:
-          ghc-version: "8.10.5"
+          ghc-version: "8.10.4"
           cabal-version: "3.4"
 
       - run: cabal update
