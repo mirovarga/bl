@@ -1,6 +1,6 @@
 cabal-version:      >=1.10
 name:               bl
-version:            0.4.0
+version:            0.5.0
 author:             Miro Varga
 maintainer:         hello@mirovarga.com
 build-type:         Simple
@@ -21,7 +21,6 @@ executable bl
 library
   hs-source-dirs:   src/lib
   exposed-modules:
-    API
     Markdown
     Mustache
     Post
@@ -29,16 +28,14 @@ library
 
   build-depends:
       aeson
-    , base            >=4.13
+    , base       >=4.13
     , directory
     , filepath
     , fsutils
     , lucid
     , mmark
-    , servant-server
     , stache
     , text
     , time
-    , warp
 
   default-language: Haskell2010

@@ -2,9 +2,7 @@
 
 [![Release](https://github.com/mirovarga/bl/actions/workflows/release.yml/badge.svg)](https://github.com/mirovarga/bl/actions/workflows/release.yml)
 
-**NB: The project is a work in progress and breaking changes can occur.**
-
-A single binary, easy to use static blog generator with a readonly REST API.
+A single binary, easy to use static blog generator.
 
 > It's my first real project in Haskell and there are still things I haven't
   implemented yet, like user-friendly (error) messages, better CLI and probably
@@ -14,7 +12,6 @@ A single binary, easy to use static blog generator with a readonly REST API.
 - [Installation](#installation)
 - [Creating a Blog](#creating-a-blog)
 - [Generating HTML Files](#generating-html-files)
-- [REST API](#rest-api)
 
 ## Overview
 
@@ -131,11 +128,10 @@ post objects:
 
 ## Generating HTML Files
 
-To generate the HTML files for a blog, `cd` to the blog's directory and use the
-`build` command:
+To generate the HTML files for a blog, `cd` to the blog's directory and type `bl`:
 
 ```
-$ bl build
+$ bl
 ```
 
 The files are generated to the `static` directory. Also, all accompanying files
@@ -148,74 +144,3 @@ directory.
 > Standalone posts (with `standalone: yes` in their front matter) aren't
   automatically added to the index and tag pages but have to be linked to
   manually in templates. 
-
-### The `build` Command Reference
-
-```
-$ bl build -h
-Usage: bl build [-d|--dir STRING]
-
-Available options:
-  -h,--help                Show this help text
-  -d,--dir STRING          Path to the directory with posts and templates
-                           (default: .)
-```
-
-## REST API
-
-In addition to generating HTML files, `bl` also provides a readonly REST API to
-access the posts.
-
-To start the API server, `cd` to the blog's directory and use the `restapi`
-command:
-
-```
-$ bl restapi
-```
-
-Now `curl http://localhost:2703/posts` to fetch all posts.
-
-> You don't need to run the `build` command before starting the API server as it
-  uses directly Markdown files from the `posts` directory.
-
-### Endpoints
-
-#### `/posts`
-
-`GET /posts` returns all posts (in no particular order).
-
-You can filter the posts with the following query parameters:
-
-- `tags=<comma_separated_tags>` to return only posts with the specified tags
-- `standalone=<yes|no>` to return only standalone or only non-standalone posts
-   respectively
-- `draft=<yes|no>` to return only draft or only non-draft posts respectively
-
-You can also sort the posts using the `sort` query parameter with the following
-values:
-
-- `title` to sort the posts by their titles
-- `created` to sort the posts by their created dates
-- `key` to sort the posts by their keys
-
-> To sort in descending order, prefix the value with `-`, e.g `sort=-title`. 
-
-#### `/posts/{key}`
-
-`GET /posts/{key}` returns the post with the `key`.
-
-> To see the API in action, you can use my blog's API server running at
-  `https://mirovarga.com/api`.
-
-### The `restapi` Command Reference
-
-```
-$ bl restapi -h
-Usage: bl restapi [-d|--dir STRING] [-p|--port INT]
-
-Available options:
-  -h,--help                Show this help text
-  -d,--dir STRING          Path to the directory with posts and templates
-                           (default: .)
-  -p,--port INT            Port to listen on (default: 2703)
-```

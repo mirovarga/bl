@@ -7,25 +7,18 @@
 
 module Main (main) where
 
-import qualified API as API
 import Options.Generic
-import qualified SSG as SSG
+import SSG
 
 main :: IO ()
-main = runCommand =<< unwrapRecord "bl 0.4.0 [github.com/mirovarga/bl]"
+main = runCommand =<< unwrapRecord "bl 0.5.0 [github.com/mirovarga/bl]"
 
 runCommand :: Command Unwrapped -> IO ()
 runCommand (Build dir) = SSG.generateHtml dir
-runCommand (RESTAPI dir port) = API.run dir port
 
-data Command w
-  = Build
-      { dir :: w ::: String <?> "Path to the directory with posts and templates (default: .)" <!> "."
-      }
-  | RESTAPI
-      { dir :: w ::: String <?> "Path to the directory with posts and templates (default: .)" <!> ".",
-        port :: w ::: Int <?> "Port to listen on (default: 2703)" <!> "2703"
-      }
+newtype Command w = Build
+  { dir :: w ::: String <?> "Path to the directory with posts and templates (default: .)" <!> "."
+  }
   deriving (Generic)
 
 deriving instance Show (Command Unwrapped)
