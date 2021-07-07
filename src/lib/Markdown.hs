@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Lib.Markdown (mdDirToPosts) where
+module Markdown (mdDirToPosts) where
 
 import Data.Aeson
 import Data.Maybe
@@ -11,7 +11,7 @@ import Data.Text hiding (filter, last, map)
 import qualified Data.Text.IO as TIO
 import Data.Time
 import GHC.Generics
-import Lib.Post
+import Post
 import System.Directory
 import System.FilePath
 import Text.MMark

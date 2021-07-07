@@ -4,16 +4,16 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE ViewPatterns #-}
 
-module Lib.Server.API (run) where
+module API (run) where
 
 import Control.Monad.IO.Class
 import Data.List
 import Data.Maybe
 import Data.Ord
 import Data.Text hiding (filter, length)
-import Lib.Markdown
-import Lib.Post
+import Markdown
 import qualified Network.Wai.Handler.Warp as W
+import Post
 import Servant hiding (Post)
 import System.FilePath
 
@@ -101,7 +101,8 @@ server dir = posts :<|> postWithKey
     posts' = catMaybes <$> mdDirToPosts (joinPath [dir, "posts"])
 
 run :: FilePath -> Int -> IO ()
-run dir port = W.run port serverApp
+run dir port = do
+  W.run port serverApp
   where
     postsAPI :: Proxy PostsAPI
     postsAPI = Proxy

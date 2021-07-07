@@ -7,9 +7,9 @@
 
 module Main (main) where
 
-import qualified Lib.SSG as SSG
-import qualified Lib.Server.API as API
+import qualified API as API
 import Options.Generic
+import qualified SSG as SSG
 
 main :: IO ()
 main = runCommand =<< unwrapRecord "bl 0.4.0 [github.com/mirovarga/bl]"

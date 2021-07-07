@@ -1,9 +1,9 @@
-module Lib.SSG (generateHtml) where
+module SSG (generateHtml) where
 
 import Data.Maybe
-import Lib.Html.Mustache
-import Lib.Markdown
-import Lib.Post
+import Markdown
+import Mustache
+import Post
 import System.FilePath
 
 generateHtml :: FilePath -> IO ()

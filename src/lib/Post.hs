@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Lib.Post where
+module Post where
 
 import Data.Aeson
 import Data.Char

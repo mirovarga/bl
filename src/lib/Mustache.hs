@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Lib.Html.Mustache
+module Mustache
   ( IndexPage (IndexPage),
     PostPage (PostPage),
     TagPage (TagPage),
@@ -19,8 +19,8 @@ import Data.Aeson
 import qualified Data.Text as T
 import qualified Data.Text.Lazy.IO as TLIO
 import Data.Time (UTCTime, defaultTimeLocale, formatTime)
-import Lib.Post
 import Lucid
+import Post
 import System.Directory
 import System.FilePath
 import System.Path
