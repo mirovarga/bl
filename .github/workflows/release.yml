@@ -18,8 +18,8 @@ jobs:
       - uses: actions/setup-haskell@v1
         id: setup-haskell-cabal
         with:
-          ghc-version: "8.10.4"
-          cabal-version: "3.4"
+          ghc-version: "8.10"
+          cabal-version: "3.4.0.0"
 
       - run: cabal update
       - run: cabal freeze
