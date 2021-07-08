@@ -3,6 +3,7 @@ module Static (serveStatic) where
 import Data.Proxy
 import Network.Wai.Handler.Warp
 import Servant
+import System.FilePath
 
 type Static = Raw
 
@@ -13,4 +14,4 @@ serveStatic dir port = run port app
     static = Proxy
 
     app :: Application
-    app = serve static $ serveDirectoryFileServer dir
+    app = serve static $ serveDirectoryFileServer $ dir </> "static"

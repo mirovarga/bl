@@ -12,7 +12,7 @@ import SSG
 import Static
 
 main :: IO ()
-main = runCommand =<< unwrapRecord "bl 0.6.0 [github.com/mirovarga/bl]"
+main = runCommand =<< unwrapRecord "bl 0.6.1 [github.com/mirovarga/bl]"
 
 runCommand :: Command Unwrapped -> IO ()
 runCommand (Build dir) = generateHtml dir
