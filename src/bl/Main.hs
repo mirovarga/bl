@@ -9,16 +9,25 @@ module Main (main) where
 
 import Options.Generic
 import SSG
+import Static
 
 main :: IO ()
-main = runCommand =<< unwrapRecord "bl 0.5.0 [github.com/mirovarga/bl]"
+main = runCommand =<< unwrapRecord "bl 0.6.0 [github.com/mirovarga/bl]"
 
 runCommand :: Command Unwrapped -> IO ()
-runCommand (Build dir) = SSG.generateHtml dir
+runCommand (Build dir) = generateHtml dir
+runCommand (Serve dir port False) = serveStatic dir port
+runCommand (Serve dir port True) = generateHtml dir >> serveStatic dir port
 
-newtype Command w = Build
-  { dir :: w ::: String <?> "Path to the directory with posts and templates (default: .)" <!> "."
-  }
+data Command w
+  = Build
+      { dir :: w ::: String <?> "Path to the directory with posts and templates (default: .)" <!> "."
+      }
+  | Serve
+      { dir :: w ::: String <?> "Path to the directory with posts and templates (default: .)" <!> ".",
+        port :: w ::: Int <?> "Port to listen on (default: 2703)" <!> "2703",
+        rebuild :: w ::: Bool <?> "Rebuild before serving (default: False)" <!> "False"
+      }
   deriving (Generic)
 
 deriving instance Show (Command Unwrapped)
